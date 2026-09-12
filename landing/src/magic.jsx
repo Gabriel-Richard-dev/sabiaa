@@ -38,17 +38,31 @@ export function NumberTicker({ value, suffix = '', className }) {
   return <span ref={ref} className={className}>0{suffix}</span>
 }
 
-/** DotPattern: fundo pontilhado com máscara radial. */
-export function DotPattern({ className = '' }) {
+// posição, largura e duração do balanço de cada nuvem
+const NUVENS = [
+  'top-6 -left-10 w-48 opacity-60 motion-safe:animate-[nuvem_16s_ease-in-out_infinite]',
+  'top-24 right-[8%] w-32 opacity-40 motion-safe:animate-[nuvem_12s_ease-in-out_infinite]',
+  'bottom-10 left-[38%] w-40 opacity-35 motion-safe:animate-[nuvem_19s_ease-in-out_infinite]',
+  'bottom-24 -right-12 w-56 opacity-50 motion-safe:animate-[nuvem_22s_ease-in-out_infinite]',
+]
+
+/** Nuvens: fundo com nuvens violeta balançando devagar. */
+export function Nuvens() {
   return (
-    <svg aria-hidden className={`pointer-events-none absolute inset-0 h-full w-full fill-violet-soft ${className}`}>
-      <defs>
-        <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
-          <circle cx="1.6" cy="1.6" r="1.6" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#dots)" />
-    </svg>
+    <div aria-hidden className="pointer-events-none absolute inset-0">
+      {NUVENS.map((c) => (
+        <svg
+          key={c}
+          viewBox="0 0 120 60"
+          className={`absolute fill-violet-soft ${c}`}
+        >
+          <circle cx="36" cy="38" r="20" />
+          <circle cx="62" cy="28" r="26" />
+          <circle cx="88" cy="40" r="17" />
+          <rect x="16" y="38" width="90" height="20" rx="10" />
+        </svg>
+      ))}
+    </div>
   )
 }
 
@@ -66,23 +80,51 @@ export function ShimmerButton({ href, children, className = '' }) {
  * LoopVideo: toca o vídeo inteiro uma vez e, no fim, volta para `loopStart`
  * (segundos) em vez de reiniciar do zero — evita o corte seco do `loop` nativo.
  */
-export function LoopVideo({ src, loopStart = 0, className }) {
+export function LoopVideo({ src, loopStart = 0, pingPong = false, className }) {
   const ref = useRef(null)
+
+  // pingPong: navegador não toca vídeo ao contrário, então a volta recua o
+  // currentTime a cada seek concluído, na mesma velocidade da ida.
+  const voltar = () => {
+    const v = ref.current
+    let ultimo = performance.now()
+    const passo = () => {
+      if (!ref.current) return
+      const agora = performance.now()
+      const t = v.currentTime - (agora - ultimo) / 1000
+      ultimo = agora
+      if (t <= 0) {
+        v.removeEventListener('seeked', passo)
+        v.currentTime = 0
+        v.play()
+      } else {
+        v.currentTime = t
+      }
+    }
+    v.addEventListener('seeked', passo)
+    passo()
+  }
+
   return (
     <video
       ref={ref}
-      src={src}
       autoPlay
       muted
       playsInline
-      loop={loopStart === 0}
+      loop={loopStart === 0 && !pingPong}
       onEnded={() => {
         const v = ref.current
-        if (!v || loopStart === 0) return
+        if (!v) return
+        if (pingPong) return voltar()
+        if (loopStart === 0) return
         v.currentTime = loopStart
         v.play()
       }}
       className={className}
-    />
+    >
+      {/* webm tem metade do tamanho; mp4 fica de reserva para Safari antigo */}
+      <source src={src.replace(/\.mp4$/, '.webm')} type="video/webm" />
+      <source src={src} type="video/mp4" />
+    </video>
   )
 }

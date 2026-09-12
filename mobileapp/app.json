@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Sabiaa",
+    "slug": "sabiaa",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "br.com.sabiaa.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#EEEDFB",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-video"
+    ]
+  }
+}

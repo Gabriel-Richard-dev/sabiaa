@@ -43,6 +43,10 @@ body { font-family: var(--font-sans); color: var(--color-ink); background: var(-
 .btn-3d:hover { filter: brightness(1.05); }
 .btn-3d:active { transform: translateY(4px); box-shadow: 0 0 0 var(--lip); }
 
+@keyframes nuvem {
+  50% { transform: translateX(28px); }
+}
+
 @keyframes shimmer {
   100% { transform: translateX(200%); }
 }
