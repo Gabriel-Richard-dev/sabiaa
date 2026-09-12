@@ -2,5 +2,5 @@ services:
   landing:
     build: ./landing
     ports:
-      - "8080:80"
+      - "8086:80"
     restart: unless-stopped
