@@ -2,16 +2,29 @@ import {
   Award,
   Backpack,
   BookOpen,
+  Brain,
+  ChartColumn,
+  Check,
+  GraduationCap,
   HeartPulse,
   Landmark,
   Lightbulb,
+  Lock,
+  MapPin,
+  Megaphone,
+  MessageCircle,
+  Palette,
+  Presentation,
   School,
+  ShieldCheck,
+  Smartphone,
   Smile,
+  Sparkles,
   Target,
   Users,
   House,
 } from 'lucide-react'
-import { BlurFade, NumberTicker, DotPattern, ShimmerButton, LoopVideo } from './magic'
+import { BlurFade, NumberTicker, Nuvens, ShimmerButton, LoopVideo } from './magic'
 
 const STATS = [
   { n: 83, t: 'dos estudantes dizem prestar mais atenção às aulas depois da restrição do celular.', c: 'bg-mint-soft' },
@@ -47,17 +60,90 @@ const PILARES = [
   },
 ]
 
+const PERFIS = [
+  {
+    Icone: Backpack,
+    nome: 'Aluno',
+    cor: 'bg-violet',
+    itens: ['Sabiá que evolui com a participação', 'Notas e progresso por disciplina', 'Atividades e aulas interativas', 'Bem-estar e comunidades'],
+  },
+  {
+    Icone: GraduationCap,
+    nome: 'Professor',
+    cor: 'bg-sky',
+    itens: ['Turmas e participação', 'Slides interativos em tempo real', 'Criação de atividades extras', 'Acompanhamento das respostas'],
+  },
+  {
+    Icone: ChartColumn,
+    nome: 'Gestão',
+    cor: 'bg-violet-deep',
+    itens: ['Painel com indicadores agregados', 'Progresso das turmas', 'Eventos da escola', 'Parâmetros de pontuação e metas'],
+  },
+]
+
+const FLUXO_AULA = [
+  'Professor inicia a aula',
+  'Libera uma pergunta no slide',
+  'Alunos respondem pelo celular',
+  'Professor vê as respostas na hora',
+  'Participação vira XP e indicador',
+]
+
+const HUB = [
+  {
+    Icone: Megaphone,
+    cor: 'bg-coral-soft',
+    titulo: 'Avisos da escola',
+    texto: 'Mudança de horário, entrega de trabalho, Feira de Ciências, Interclasse: tudo num painel só, por categoria.',
+  },
+  {
+    Icone: Palette,
+    cor: 'bg-amber-soft',
+    titulo: 'Desafio do dia',
+    texto: '"Desenhe algo que te faz feliz." Os desenhos da turma vão para um mural coletivo.',
+  },
+  {
+    Icone: MapPin,
+    cor: 'bg-mint-soft',
+    titulo: 'Comunidades presenciais',
+    texto: 'Xadrez no intervalo, clube de desenho, futebol: o app ajuda os alunos a se encontrarem no mundo real.',
+  },
+  {
+    Icone: MessageCircle,
+    cor: 'bg-sky-soft',
+    titulo: 'Ajuda do Sabiá',
+    texto: 'IA como tutora nas atividades: não entrega a resposta, guia o aluno por partes até ele chegar lá.',
+  },
+  {
+    Icone: Brain,
+    cor: 'bg-violet-mist',
+    titulo: 'Como você está hoje?',
+    texto: 'Check-in de humor e canal anônimo, com atividades rápidas de autorregulação baseadas em TCC.',
+  },
+]
+
+const CUIDADOS = [
+  'A IA não substitui professores nem psicólogos, e não diagnostica estudantes.',
+  'Análises automatizadas são sempre identificadas como tal.',
+  'Atividades de bem-estar validadas com profissionais antes de ir para a escola.',
+  'LGPD, acesso por perfil e relatórios agregados sempre que possível.',
+  'Pontuação nunca é o único indicador de aprendizagem.',
+  'O professor decide quando e como o celular é usado em sala.',
+]
+
+const ROADMAP = [
+  { fase: 'Hackathon', texto: 'Protótipo funcional: aluno, Sabiá, aula interativa, professor e painel.' },
+  { fase: 'Validação', texto: 'Conversar com professores, estudantes e gestores; refinar gamificação e atividades.' },
+  { fase: 'Especialistas', texto: 'Validar o bem-estar com profissionais de saúde, privacidade e as análises de IA.' },
+  { fase: 'Piloto', texto: 'Implantar em uma escola e medir adesão, participação e impacto percebido.' },
+  { fase: 'Escala', texto: 'Expandir para redes municipais e estaduais, integrando sistemas existentes.' },
+]
+
 const AGENTES = [
   { Icone: Backpack, nome: 'Alunos', papel: 'Foco do projeto. Interagem com a plataforma e participam das atividades propostas.', cor: 'bg-violet' },
   { Icone: School, nome: 'Escolas e professores', papel: 'Integram o Sabiaa à rotina escolar, acompanham indicadores agregados da turma e apoiam estratégias pedagógicas e de bem-estar.', cor: 'bg-sky' },
   { Icone: House, nome: 'Famílias', papel: 'Acompanham indicadores de bem-estar e engajamento, recebem orientações e ajudam a construir hábitos digitais mais saudáveis.', cor: 'bg-amber' },
   { Icone: Landmark, nome: 'Governo', papel: 'Apoia a implementação em escala, financia ou contrata a solução e usa indicadores agregados para orientar políticas públicas.', cor: 'bg-violet-deep' },
-]
-
-const PROXIMOS = [
-  'Refinar o protótipo',
-  'Conversar com profissionais, professores e estudantes e rodar pesquisas de adesão',
-  'Refinar as atividades de terapia cognitivo-comportamental com profissionais de saúde',
 ]
 
 const TIME = ['Camila Azevedo', 'Juan Pedro', 'Gabriel Richard', 'Mariana Holanda']
@@ -75,10 +161,33 @@ function Botao({ href, children, variante = 'violeta' }) {
   )
 }
 
-function Secao({ id, children, className = '' }) {
+function Onda({ className }) {
   return (
-    <section id={id} className={`px-6 py-20 sm:py-28 ${className}`}>
+    <svg
+      viewBox="0 0 1440 48"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      className={`absolute left-0 h-8 w-full sm:h-12 ${className}`}
+    >
+      <path d="M0 48V24C120 0 240 0 360 24S600 48 720 24 960 0 1080 24 1320 48 1440 24V48Z" />
+    </svg>
+  )
+}
+
+// classes literais: o Tailwind só gera a cor se enxergar a classe inteira no código.
+// fill é herdado pelas ondas; ícones lucide não são afetados (definem fill="none")
+const CORES = {
+  mist: 'bg-mist fill-mist',
+  'violet-mist': 'bg-violet-mist fill-violet-mist',
+}
+
+// seções coloridas ganham ondas nas bordas
+function Secao({ id, children, cor }) {
+  return (
+    <section id={id} className={`relative px-6 py-20 sm:py-28 ${CORES[cor] ?? ''}`}>
+      {cor && <Onda className="bottom-[calc(100%-1px)]" />}
       <div className="mx-auto max-w-5xl">{children}</div>
+      {cor && <Onda className="top-[calc(100%-1px)] rotate-180" />}
     </section>
   )
 }
@@ -97,7 +206,7 @@ export default function App() {
     <>
       {/* Hero */}
       <header id="topo" className="relative overflow-hidden px-6 pt-12 pb-20 sm:pt-16">
-        <DotPattern className="[mask-image:radial-gradient(600px_circle_at_50%_0%,black,transparent)]" />
+        <Nuvens />
         <div className="relative mx-auto grid max-w-5xl items-center gap-12 sm:grid-cols-2">
           <div>
             <img src="/media/logooficial.svg" alt="Sabiaa" className="mb-8 h-10 w-auto" />
@@ -109,8 +218,8 @@ export default function App() {
               feito para escolas que querem ir além da proibição.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <ShimmerButton href="#solucao" className="bg-violet text-white [--lip:var(--color-violet-dark)]">
-                Conhecer o Sabiaa
+              <ShimmerButton href="#proposta" className="bg-violet text-white [--lip:var(--color-violet-dark)]">
+                Ver a proposta
               </ShimmerButton>
               <Botao href="#problema" variante="branco">Ver o problema</Botao>
             </div>
@@ -124,7 +233,7 @@ export default function App() {
       </header>
 
       {/* Problema + dados */}
-      <Secao id="problema" className="bg-mist">
+      <Secao id="problema" cor="mist">
         <Titulo sub="A resposta atual é uma só: proibir. A atenção melhora, mas o tédio e a ansiedade aparecem no lugar.">
           Proibir resolve metade do problema
         </Titulo>
@@ -159,7 +268,7 @@ export default function App() {
       </Secao>
 
       {/* Aprendizagem */}
-      <Secao id="aprendizagem" className="bg-violet-mist">
+      <Secao id="aprendizagem" cor="violet-mist">
         <div className="grid items-center gap-12 sm:grid-cols-2">
           <LoopVideo
             src="/media/escrevendo.mp4"
@@ -208,21 +317,156 @@ export default function App() {
             </BlurFade>
           ))}
         </div>
-        <div className="mt-10 flex items-center gap-6 rounded-2xl border-2 border-dashed border-hare p-6">
-          <img src="/media/personagemprincipal.svg" alt="" className="h-24 w-auto" />
+      </Secao>
+
+      {/* Proposta: três perfis */}
+      <Secao id="proposta" cor="mist">
+        <Titulo sub="Uma plataforma, três visões da mesma escola. O Sabiá conecta todas elas.">
+          O que estamos propondo
+        </Titulo>
+        <div className="grid gap-6 sm:grid-cols-3">
+          {PERFIS.map((p, i) => (
+            <BlurFade key={p.nome} delay={i * 0.12} className="rounded-2xl border-2 border-line bg-white p-6">
+              <span className={`flex size-12 items-center justify-center rounded-2xl text-white ${p.cor}`}>
+                <p.Icone className="size-6" strokeWidth={2.25} />
+              </span>
+              <h3 className="font-display mt-4 text-xl font-extrabold">{p.nome}</h3>
+              <ul className="mt-3 space-y-2">
+                {p.itens.map((item) => (
+                  <li key={item} className="flex gap-2 font-semibold text-slate">
+                    <Check className="mt-1 size-4 shrink-0 text-violet" strokeWidth={3} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </BlurFade>
+          ))}
+        </div>
+      </Secao>
+
+      {/* Aula interativa */}
+      <Secao id="aula">
+        <div className="grid items-center gap-12 sm:grid-cols-2">
           <div>
-            <p className="font-extrabold">Como funciona, passo a passo</p>
-            <p className="mt-1 font-semibold text-slate">
-              O aluno participa de atividades de aprendizagem, colaboração, criatividade e bem-estar;
-              a plataforma acompanha o engajamento, oferece recompensas gamificadas e gera relatórios
-              de saúde analisados por IA, com atividades de terapia cognitivo-comportamental.
+            <span className="inline-flex items-center gap-2 rounded-xl bg-violet-mist px-3 py-1.5 text-sm font-extrabold text-violet-deep">
+              <Presentation className="size-4" strokeWidth={2.5} /> Aula interativa
+            </span>
+            <h2 className="font-display mt-4 text-3xl font-extrabold sm:text-4xl">
+              Na aula, o celular levanta a mão
+            </h2>
+            <p className="mt-5 text-lg font-semibold text-slate">
+              O professor apresenta slides com perguntas e enquetes. Os alunos respondem pelo
+              celular, e a turma inteira participa, não só quem senta na frente.
             </p>
+            <ol className="mt-8 space-y-3">
+              {FLUXO_AULA.map((passo, i) => (
+                <li key={passo} className="flex items-center gap-3 font-extrabold">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-violet text-white">
+                    {i + 1}
+                  </span>
+                  {passo}
+                </li>
+              ))}
+            </ol>
+          </div>
+          <LoopVideo src="/media/celular.mp4" pingPong className="mx-auto w-full max-w-sm rounded-3xl" />
+        </div>
+      </Secao>
+
+      {/* Sabiá / gamificação */}
+      <Secao id="sabia" cor="violet-mist">
+        <Titulo sub="Um companheiro digital que evolui com participação, atividades e desempenho, não só com presença.">
+          Seu Sabiá cresce junto com você
+        </Titulo>
+        <div className="grid items-center gap-10 sm:grid-cols-2">
+          <LoopVideo src="/media/levelup.mp4" pingPong className="mx-auto w-full max-w-sm rounded-3xl" />
+          <div className="rounded-3xl border-2 border-line bg-white p-6 sm:p-8">
+            <div className="flex items-baseline justify-between">
+              <p className="font-display text-2xl font-extrabold">Nível 6</p>
+              <p className="font-extrabold text-violet">840 XP</p>
+            </div>
+            <div className="mt-3 h-4 overflow-hidden rounded-full bg-violet-soft">
+              <div className="h-full w-[84%] rounded-full bg-violet" />
+            </div>
+            <p className="mt-2 text-sm font-semibold text-slate">160 XP para a próxima recompensa</p>
+            <div className="mt-6 space-y-3">
+              <p className="flex items-center gap-2 rounded-2xl bg-mint-soft px-4 py-3 font-extrabold">
+                <Sparkles className="size-5 text-mint" strokeWidth={2.5} /> Atividade concluída: +50 XP
+              </p>
+              <p className="flex items-center gap-2 rounded-2xl bg-amber-soft px-4 py-3 font-extrabold">
+                <Award className="size-5 text-amber" strokeWidth={2.5} /> Nova recompensa: Boné do Sabiá
+              </p>
+            </div>
+            <p className="mt-6 font-semibold text-slate">
+              Aula → participação → pontos → recompensas → evolução do Sabiá → mais engajamento.
+            </p>
+          </div>
+        </div>
+        <div className="mt-14 grid items-center gap-8 sm:grid-cols-[1fr_1fr_1.2fr]">
+          <LoopVideo src="/media/cores.mp4" pingPong className="w-full rounded-3xl" />
+          <LoopVideo src="/media/cosmeticos.mp4" pingPong className="w-full rounded-3xl" />
+          <div>
+            <h3 className="font-display text-2xl font-extrabold">Do seu jeito</h3>
+            <p className="mt-3 font-semibold text-slate">
+              Cores, roupas, chapéus e acessórios. Os pontos desbloqueiam itens para personalizar o
+              Sabiá; alguns só aparecem quando o aluno sobe de nível.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2 text-sm font-extrabold">
+              <span className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-1.5">
+                <Check className="size-4 text-mint" strokeWidth={3} /> Disponível
+              </span>
+              <span className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-1.5 text-slate">
+                <Lock className="size-4" strokeWidth={2.5} /> Bloqueado
+              </span>
+            </div>
+          </div>
+        </div>
+      </Secao>
+
+      {/* Hub da vida escolar */}
+      <Secao id="hub">
+        <Titulo sub="Além da sala de aula: aprender, participar, criar, conviver e cuidar, tudo no mesmo lugar.">
+          Um hub da vida escolar
+        </Titulo>
+        <div className="grid gap-6 sm:grid-cols-3">
+          <div className="flex items-center justify-center rounded-2xl border-2 border-line bg-violet-mist p-4">
+            <LoopVideo src="/media/idle1.mp4" pingPong className="w-full max-w-60 rounded-2xl" />
+          </div>
+          {HUB.map((h, i) => (
+            <BlurFade key={h.titulo} delay={i * 0.08} className={`rounded-2xl border-2 border-line p-6 ${h.cor}`}>
+              <h.Icone className="size-8 text-violet-deep" strokeWidth={2.25} />
+              <h3 className="font-display mt-3 text-lg font-extrabold">{h.titulo}</h3>
+              <p className="mt-1 font-semibold leading-snug text-ink/80">{h.texto}</p>
+            </BlurFade>
+          ))}
+        </div>
+      </Secao>
+
+      {/* Responsabilidade */}
+      <Secao cor="mist">
+        <div className="grid items-center gap-10 sm:grid-cols-[1fr_1.4fr]">
+          <LoopVideo src="/media/idle2.mp4" pingPong className="mx-auto w-full max-w-xs rounded-3xl" />
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-1.5 text-sm font-extrabold text-violet-deep">
+              <ShieldCheck className="size-4" strokeWidth={2.5} /> Com responsabilidade
+            </span>
+            <h2 className="font-display mt-4 text-3xl font-extrabold">
+              Tecnologia que apoia, não substitui
+            </h2>
+            <ul className="mt-6 space-y-3">
+              {CUIDADOS.map((c) => (
+                <li key={c} className="flex gap-3 font-semibold text-slate">
+                  <Check className="mt-1 size-4 shrink-0 text-violet" strokeWidth={3} />
+                  {c}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </Secao>
 
       {/* Ecossistema */}
-      <Secao id="ecossistema" className="bg-mist">
+      <Secao id="ecossistema">
         <Titulo sub="O Sabiaa só funciona dentro da escola real: alunos no centro, com escola, família e poder público em volta.">
           Quem faz o Sabiaa acontecer
         </Titulo>
@@ -246,35 +490,41 @@ export default function App() {
         </p>
       </Secao>
 
-      {/* Impacto e futuro */}
-      <Secao>
-        <div className="grid gap-10 sm:grid-cols-2">
+      {/* Impacto e roadmap */}
+      <Secao cor="mist">
+        <div className="grid gap-10 sm:grid-cols-[1fr_1.3fr]">
           <div>
             <h2 className="font-display text-2xl font-extrabold">Impacto que queremos medir</h2>
             <p className="mt-4 text-lg font-semibold text-slate">
-              Bem-estar e rendimento dos estudantes do fundamental ao médio e, junto com eles,
-              professores, famílias e a comunidade escolar. O resultado esperado é a melhoria dos
-              índices das escolas e da satisfação dos alunos.
+              Participação nas aulas, conclusão de atividades, evolução do desempenho e indicadores
+              de bem-estar dos estudantes do fundamental ao médio, junto com a adesão de professores
+              e da comunidade escolar.
+            </p>
+            <p className="mt-4 flex gap-2 text-sm font-semibold text-slate">
+              <Smartphone className="mt-0.5 size-4 shrink-0 text-violet" strokeWidth={2.5} />
+              Nenhum resultado é apresentado como comprovado antes de validação em escola real.
             </p>
           </div>
           <div>
-            <h2 className="font-display text-2xl font-extrabold">Próximos passos</h2>
-            <ul className="mt-4 space-y-3">
-              {PROXIMOS.map((p, i) => (
-                <li key={p} className="flex gap-3 font-semibold text-slate">
+            <h2 className="font-display text-2xl font-extrabold">Roadmap</h2>
+            <ol className="mt-4 space-y-3">
+              {ROADMAP.map((r, i) => (
+                <li key={r.fase} className="flex gap-3 font-semibold text-slate">
                   <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-violet-soft text-sm font-extrabold text-violet-deep">
                     {i + 1}
                   </span>
-                  {p}
+                  <span>
+                    <strong className="font-extrabold text-ink">{r.fase}.</strong> {r.texto}
+                  </span>
                 </li>
               ))}
-            </ul>
+            </ol>
           </div>
         </div>
       </Secao>
 
       {/* Time */}
-      <Secao id="time" className="bg-mist">
+      <Secao id="time">
         <Titulo sub="HACKTUDO — Time VIOLET">Quem está por trás</Titulo>
 		<img draggable="false"
           src="/media/logo-violet.png"
@@ -293,7 +543,7 @@ export default function App() {
       <footer className="border-t-2 border-line px-6 py-16 text-center">
         <LoopVideo src="/media/feliz.mp4" className="mx-auto w-40 rounded-3xl" />
         <p className="font-display mx-auto mt-8 max-w-2xl text-2xl font-extrabold leading-snug sm:text-3xl">
-          O problema nunca foi o celular na mão do aluno. Foi ninguém ter ensinado o que fazer com ele.
+          O celular deixa de ser uma distração quando passa a ter um propósito.
         </p>
         <img src="/media/logo.svg" alt="Sabiaa" className="mx-auto mt-10 h-12 w-auto" />
       </footer>
