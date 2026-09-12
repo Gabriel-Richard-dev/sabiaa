@@ -276,6 +276,11 @@ export default function App() {
       {/* Time */}
       <Secao id="time" className="bg-mist">
         <Titulo sub="HACKTUDO — Time VIOLET">Quem está por trás</Titulo>
+		<img draggable="false"
+          src="/media/logo-violet.png"
+          alt="Violet Creative & Studios"
+          className="mx-auto mb-10 h-auto w-56 sm:w-64"
+        />
         <div className="grid gap-4 sm:grid-cols-4">
           {TIME.map((n) => (
             <div key={n} className="rounded-2xl border-2 border-line bg-white p-5 text-center font-extrabold">
