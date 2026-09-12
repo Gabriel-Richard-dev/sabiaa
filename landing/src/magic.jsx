@@ -80,47 +80,38 @@ export function ShimmerButton({ href, children, className = '' }) {
  * LoopVideo: toca o vídeo inteiro uma vez e, no fim, volta para `loopStart`
  * (segundos) em vez de reiniciar do zero — evita o corte seco do `loop` nativo.
  */
-export function LoopVideo({ src, loopStart = 0, pingPong = false, className }) {
+// ida e volta (celular, levelup, cores, cosmeticos, idle1, idle2) já vem gravada no arquivo:
+//   split[a][b];[b]trim=start_frame=1,setpts=PTS-STARTPTS,reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[a][r]concat=n=2:v=1:a=0
+// voltar o currentTime quadro a quadro travava: cada seek decodificava desde o único keyframe.
+export function LoopVideo({ src, loopStart = 0, className }) {
   const ref = useRef(null)
 
-  // pingPong: navegador não toca vídeo ao contrário, então a volta recua o
-  // currentTime a cada seek concluído, na mesma velocidade da ida.
-  const voltar = () => {
+  // lazy: só baixa e toca perto da tela; fora dela pausa para poupar CPU
+  useEffect(() => {
     const v = ref.current
-    let ultimo = performance.now()
-    const passo = () => {
-      if (!ref.current) return
-      const agora = performance.now()
-      const t = v.currentTime - (agora - ultimo) / 1000
-      ultimo = agora
-      if (t <= 0) {
-        v.removeEventListener('seeked', passo)
-        v.currentTime = 0
-        v.play()
-      } else {
-        v.currentTime = t
-      }
-    }
-    v.addEventListener('seeked', passo)
-    passo()
-  }
+    const io = new IntersectionObserver(
+      ([e]) => (e.isIntersecting ? v.play().catch(() => {}) : v.pause()),
+      { rootMargin: '200px' },
+    )
+    io.observe(v)
+    return () => io.disconnect()
+  }, [])
 
   return (
     <video
       ref={ref}
-      autoPlay
+      preload="none"
       muted
       playsInline
-      loop={loopStart === 0 && !pingPong}
+      loop={loopStart === 0}
       onEnded={() => {
         const v = ref.current
-        if (!v) return
-        if (pingPong) return voltar()
-        if (loopStart === 0) return
+        if (!v || loopStart === 0) return
         v.currentTime = loopStart
         v.play()
       }}
-      className={className}
+      // todos os vídeos são 640x640: reserva o espaço antes de carregar (sem pulo de layout)
+      className={`aspect-square ${className}`}
     >
       {/* webm tem metade do tamanho; mp4 fica de reserva para Safari antigo */}
       <source src={src.replace(/\.mp4$/, '.webm')} type="video/webm" />

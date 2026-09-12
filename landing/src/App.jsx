@@ -369,7 +369,7 @@ export default function App() {
               ))}
             </ol>
           </div>
-          <LoopVideo src="/media/celular.mp4" pingPong className="mx-auto w-full max-w-sm rounded-3xl" />
+          <LoopVideo src="/media/celular.mp4" className="mx-auto w-full max-w-sm rounded-3xl" />
         </div>
       </Secao>
 
@@ -379,7 +379,7 @@ export default function App() {
           Seu Sabiá cresce junto com você
         </Titulo>
         <div className="grid items-center gap-10 sm:grid-cols-2">
-          <LoopVideo src="/media/levelup.mp4" pingPong className="mx-auto w-full max-w-sm rounded-3xl" />
+          <LoopVideo src="/media/levelup.mp4" className="mx-auto w-full max-w-sm rounded-3xl" />
           <div className="rounded-3xl border-2 border-line bg-white p-6 sm:p-8">
             <div className="flex items-baseline justify-between">
               <p className="font-display text-2xl font-extrabold">Nível 6</p>
@@ -403,8 +403,8 @@ export default function App() {
           </div>
         </div>
         <div className="mt-14 grid items-center gap-8 sm:grid-cols-[1fr_1fr_1.2fr]">
-          <LoopVideo src="/media/cores.mp4" pingPong className="w-full rounded-3xl" />
-          <LoopVideo src="/media/cosmeticos.mp4" pingPong className="w-full rounded-3xl" />
+          <LoopVideo src="/media/cores.mp4" className="w-full rounded-3xl" />
+          <LoopVideo src="/media/cosmeticos.mp4" className="w-full rounded-3xl" />
           <div>
             <h3 className="font-display text-2xl font-extrabold">Do seu jeito</h3>
             <p className="mt-3 font-semibold text-slate">
@@ -430,7 +430,7 @@ export default function App() {
         </Titulo>
         <div className="grid gap-6 sm:grid-cols-3">
           <div className="flex items-center justify-center rounded-2xl border-2 border-line bg-violet-mist p-4">
-            <LoopVideo src="/media/idle1.mp4" pingPong className="w-full max-w-60 rounded-2xl" />
+            <LoopVideo src="/media/idle1.mp4" className="w-full max-w-60 rounded-2xl" />
           </div>
           {HUB.map((h, i) => (
             <BlurFade key={h.titulo} delay={i * 0.08} className={`rounded-2xl border-2 border-line p-6 ${h.cor}`}>
@@ -445,7 +445,7 @@ export default function App() {
       {/* Responsabilidade */}
       <Secao cor="mist">
         <div className="grid items-center gap-10 sm:grid-cols-[1fr_1.4fr]">
-          <LoopVideo src="/media/idle2.mp4" pingPong className="mx-auto w-full max-w-xs rounded-3xl" />
+          <LoopVideo src="/media/idle2.mp4" className="mx-auto w-full max-w-xs rounded-3xl" />
           <div>
             <span className="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-1.5 text-sm font-extrabold text-violet-deep">
               <ShieldCheck className="size-4" strokeWidth={2.5} /> Com responsabilidade
