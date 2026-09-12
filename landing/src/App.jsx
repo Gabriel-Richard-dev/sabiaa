@@ -24,7 +24,9 @@ import {
   Users,
   House,
 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { BlurFade, NumberTicker, Nuvens, ShimmerButton, LoopVideo } from './magic'
+import Painel from './Painel'
 
 const STATS = [
   { n: 83, t: 'dos estudantes dizem prestar mais atenção às aulas depois da restrição do celular.', c: 'bg-mint-soft' },
@@ -161,6 +163,12 @@ function Botao({ href, children, variante = 'violeta' }) {
   )
 }
 
+function perfilDaHash() {
+  if (window.location.hash === '#painel-professor') return 'professor'
+  if (window.location.hash === '#painel-gestao') return 'gestao'
+  return null
+}
+
 function Onda({ className }) {
   return (
     <svg
@@ -202,6 +210,16 @@ function Titulo({ children, sub }) {
 }
 
 export default function App() {
+  const [painel, setPainel] = useState(perfilDaHash)
+
+  useEffect(() => {
+    const atualizar = () => setPainel(perfilDaHash())
+    window.addEventListener('hashchange', atualizar)
+    return () => window.removeEventListener('hashchange', atualizar)
+  }, [])
+
+  if (painel) return <Painel perfil={painel} />
+
   return (
     <>
       {/* Hero */}
@@ -222,6 +240,11 @@ export default function App() {
                 Ver a proposta
               </ShimmerButton>
               <Botao href="#problema" variante="branco">Ver o problema</Botao>
+            </div>
+            <div className="mt-6 flex flex-wrap items-center gap-2 text-sm font-extrabold">
+              <span className="mr-1 text-slate">Demo web:</span>
+              <a href="#painel-professor" className="rounded-xl bg-sky-soft px-3 py-2 text-sky-dark hover:brightness-95">Professor</a>
+              <a href="#painel-gestao" className="rounded-xl bg-violet-mist px-3 py-2 text-violet-deep hover:brightness-95">Gestão</a>
             </div>
           </div>
           <LoopVideo
@@ -339,6 +362,7 @@ export default function App() {
                   </li>
                 ))}
               </ul>
+              {p.nome !== 'Aluno' && <a href={p.nome === 'Professor' ? '#painel-professor' : '#painel-gestao'} className="mt-5 inline-flex items-center gap-1 text-sm font-extrabold text-violet hover:text-violet-deep">Abrir painel web <span aria-hidden>→</span></a>}
             </BlurFade>
           ))}
         </div>
