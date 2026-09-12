@@ -49,9 +49,9 @@ const PILARES = [
 
 const AGENTES = [
   { Icone: Backpack, nome: 'Alunos', papel: 'Foco do projeto. Interagem com a plataforma e participam das atividades propostas.', cor: 'bg-violet' },
-  { Icone: School, nome: 'Escolas e professores', papel: '[PREENCHER]', cor: 'bg-sky' },
-  { Icone: House, nome: 'Famílias', papel: '[PREENCHER]', cor: 'bg-amber' },
-  { Icone: Landmark, nome: 'Governo', papel: '[PREENCHER]', cor: 'bg-violet-deep' },
+  { Icone: School, nome: 'Escolas e professores', papel: 'Integram o Sabiaa à rotina escolar, acompanham indicadores agregados da turma e apoiam estratégias pedagógicas e de bem-estar.', cor: 'bg-sky' },
+  { Icone: House, nome: 'Famílias', papel: 'Acompanham indicadores de bem-estar e engajamento, recebem orientações e ajudam a construir hábitos digitais mais saudáveis.', cor: 'bg-amber' },
+  { Icone: Landmark, nome: 'Governo', papel: 'Apoia a implementação em escala, financia ou contrata a solução e usa indicadores agregados para orientar políticas públicas.', cor: 'bg-violet-deep' },
 ]
 
 const PROXIMOS = [
@@ -213,7 +213,9 @@ export default function App() {
           <div>
             <p className="font-extrabold">Como funciona, passo a passo</p>
             <p className="mt-1 font-semibold text-slate">
-              [PREENCHER] — fluxo do produto, funcionalidades detalhadas e screenshots do MVP.
+              O aluno participa de atividades de aprendizagem, colaboração, criatividade e bem-estar;
+              a plataforma acompanha o engajamento, oferece recompensas gamificadas e gera relatórios
+              de saúde analisados por IA, com atividades de terapia cognitivo-comportamental.
             </p>
           </div>
         </div>
@@ -239,7 +241,8 @@ export default function App() {
         </div>
         <p className="mt-8 text-center font-semibold text-slate">
           Custos previstos: hospedagem, banco de dados e APIs de IA. Possível parceria: SENAI.
-          Financiamento e modelo de sustentação: [PREENCHER].
+          Sustentação: modelo B2G/B2B2C, com editais, programas públicos e parcerias institucionais
+          no início; depois, licenciamento para escolas ou redes de ensino, proporcional ao número de usuários.
         </p>
       </Secao>
 
