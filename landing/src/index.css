@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Nunito", ui-rounded, system-ui, sans-serif;
+  --font-display: "Baloo 2", "Nunito", ui-rounded, system-ui, sans-serif;
+
+  /* marca — extraídas das logos, ver inspiration/sabiiadesign.md */
+  --color-violet: #7863ed;
+  --color-violet-dark: #5a43e2;
+  --color-violet-deep: #27187c;
+  --color-violet-soft: #cbc6fb;
+  --color-violet-mist: #f0effc;
+
+  /* neutros */
+  --color-ink: #030021;
+  --color-slate: #5b5a6e;
+  --color-hare: #a9a7bd;
+  --color-line: #e3e1f3;
+  --color-mist: #f9f9fb;
+  --color-snow: #ffffff;
+
+  /* acentos semânticos */
+  --color-mint: #22c58b;
+  --color-mint-soft: #d6f7e8;
+  --color-amber: #ffc247;
+  --color-amber-soft: #fff3d6;
+  --color-coral: #ff5d73;
+  --color-coral-soft: #ffe0e4;
+  --color-sky: #45b6ff;
+  --color-sky-dark: #1f97e8;
+  --color-sky-soft: #e0f1ff;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-sans); color: var(--color-ink); background: var(--color-snow); }
+
+/* botão 3D: lip de 4px que some no :active */
+.btn-3d {
+  @apply inline-flex items-center justify-center rounded-2xl px-7 py-3.5 font-extrabold
+         transition-[filter,transform,box-shadow] duration-150 select-none;
+  box-shadow: 0 4px 0 var(--lip);
+}
+.btn-3d:hover { filter: brightness(1.05); }
+.btn-3d:active { transform: translateY(4px); box-shadow: 0 0 0 var(--lip); }
+
+@keyframes shimmer {
+  100% { transform: translateX(200%); }
+}
