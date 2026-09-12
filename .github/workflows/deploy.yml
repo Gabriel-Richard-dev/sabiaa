@@ -24,5 +24,6 @@ jobs:
             cd '$APP_DIR'
             git fetch origin main
             git reset --hard origin/main
+            docker compose down
             docker compose up -d --build --remove-orphans
           "
