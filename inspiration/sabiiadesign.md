@@ -1,6 +1,7 @@
 # Sabiaa — sistema de design
-Estrutura e mecânica herdadas do Duolingo (tokens extraídos de pt.duolingo.com em 2026-09-12);
-paleta trocada pelas cores das logos do Sabiaa (`logos/*.svg`) e tipografia por equivalentes livres.
+Primeira versão partiu da estrutura do Duolingo (pt.duolingo.com, 2026-09-12); botões e barras
+foram redesenhados com formato próprio (pílula e fio) para não parecer cópia.
+Paleta vem das logos do Sabiaa (`logos/*.svg`) e tipografia de fontes livres.
 
 ## Tipografia
 - **Display / títulos:** `Baloo 2` (Google Fonts) — arredondada e pesada, mesmo espírito da
@@ -12,8 +13,10 @@ paleta trocada pelas cores das logos do Sabiaa (`logos/*.svg`) e tipografia por 
 
 ## Formas e movimento
 - border-radius: 16px em botões grandes, 12px em cards, 8px em elementos pequenos, 50% em avatares.
-- Botão "3D": `box-shadow: 0 4px 0 <tom escuro>`; no `:active` o lip vai a 0 e o botão desce 4px.
-- Transições curtas: `filter .2s` no hover, box-shadow no lip.
+- Botão em pílula (raio total), sem sombra/lip; no `:active` encolhe (`scale(.97)`).
+  Opções de quiz e itens tocáveis usam raio 16px uniforme.
+- Barra "fio": trilho de 4px com um ponto de pouso (círculo branco, borda 3px da cor) no fim do progresso.
+- Transições curtas: `filter` no hover, `transform` no clique.
 - Bordas visíveis de 2px em cards (`--color-line`), nunca sombra difusa.
 
 ## Paleta — cores da marca (extraídas das logos)
@@ -46,5 +49,5 @@ Escolhidos para conviver com o violeta mantendo o papel que verde/amarelo/vermel
 
 ## Como usar
 Tokens vivem em `src/index.css` dentro de `@theme` (Tailwind v4) — as classes `bg-violet`,
-`text-slate`, `border-line` etc. saem direto daí. O botão 3D é a classe `.btn-3d` com a
-variável `--lip` definida por variante.
+`text-slate`, `border-line` etc. saem direto daí. O botão é a classe `.btn-pilula`; a barra é
+`.fio` com a cor em `--cor`. No mobile: `Btn`, `Opcao`, `Bar` em `mobileapp/ui.js`.

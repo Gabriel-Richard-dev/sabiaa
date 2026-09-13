@@ -134,8 +134,8 @@ export default function App() {
               <Anim nome="feliz" size={200} style={{ alignSelf: 'center' }} />
               <T muted style={{ textAlign: 'center', marginBottom: 8 }}>Escolha como você quer entrar</T>
               <Btn icone="bag-personal-outline" title="Sou aluno" onPress={() => s.entrar('aluno')} />
-              <Btn icone="human-male-board" title="Sou professor" color={c.sky} lip={c.skyDark} onPress={() => s.entrar('professor')} />
-              <Btn icone="domain" title="Gestão escolar" color={c.mint} lip={c.mintDark} onPress={() => s.entrar('gestao')} />
+              <Btn icone="human-male-board" title="Sou professor" color={c.sky} onPress={() => s.entrar('professor')} />
+              <Btn icone="domain" title="Gestão escolar" color={c.mint} onPress={() => s.entrar('gestao')} />
               <T muted style={{ textAlign: 'center', fontSize: 12, marginTop: 8 }}>Versão de demonstração com dados fictícios</T>
             </View>
           </SafeAreaView>

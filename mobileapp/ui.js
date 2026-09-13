@@ -77,8 +77,8 @@ export function Card({ children, style, center }) {
   );
 }
 
-// botão "3D": lip de 4px que some ao pressionar
-export function Btn({ title, icone, iconeFim, onPress, color = c.violet, lip = c.violetDark, disabled, small, style }) {
+// botão em pílula; ao pressionar encolhe
+export function Btn({ title, icone, iconeFim, onPress, color = c.violet, disabled, small, style }) {
   const cor = disabled ? c.slate : c.snow;
   const tam = small ? 16 : 20;
   return (
@@ -87,11 +87,10 @@ export function Btn({ title, icone, iconeFim, onPress, color = c.violet, lip = c
       disabled={disabled}
       style={({ pressed }) => [
         {
+          borderRadius: 999,
           backgroundColor: disabled ? c.line : color,
-          borderBottomColor: disabled ? c.hare : lip,
-          borderBottomWidth: pressed ? 0 : 4,
-          marginTop: pressed ? 4 : 0,
-          borderRadius: 16,
+          transform: [{ scale: pressed ? 0.97 : 1 }],
+          opacity: pressed ? 0.88 : 1,
           paddingVertical: small ? 8 : 13,
           paddingHorizontal: small ? 14 : 20,
           alignItems: 'center',
@@ -109,11 +108,15 @@ export function Btn({ title, icone, iconeFim, onPress, color = c.violet, lip = c
   );
 }
 
+// "fio": trilho fino com o ponto de pouso do sabiá no fim do progresso
 export function Bar({ value, max = 100, color = c.violet }) {
   const pct = Math.max(0, Math.min(1, value / (max || 1))) * 100;
   return (
-    <View style={{ height: 12, borderRadius: 6, backgroundColor: c.line, overflow: 'hidden', alignSelf: 'stretch' }}>
-      <View style={{ width: `${pct}%`, height: '100%', backgroundColor: color, borderRadius: 6 }} />
+    <View style={{ height: 14, justifyContent: 'center', alignSelf: 'stretch', marginHorizontal: 7 }}>
+      <View style={{ height: 4, borderRadius: 2, backgroundColor: c.line }}>
+        <View style={{ width: `${pct}%`, height: '100%', backgroundColor: color, borderRadius: 2 }} />
+      </View>
+      <View style={{ position: 'absolute', left: `${pct}%`, marginLeft: -7, width: 14, height: 14, borderRadius: 7, borderWidth: 3, borderColor: color, backgroundColor: c.snow }} />
     </View>
   );
 }
@@ -130,7 +133,7 @@ export function Stat({ valor, label, cor = c.violet }) {
 export function Opcao({ texto, onPress, estado }) {
   const [bg, borda] = { certa: [c.mintSoft, c.mint], errada: [c.coralSoft, c.coral], escolhida: [c.violetMist, c.violet] }[estado] || [c.snow, c.line];
   return (
-    <Pressable onPress={onPress} disabled={!onPress} style={{ backgroundColor: bg, borderColor: borda, borderWidth: 2, borderBottomWidth: 4, borderRadius: 12, padding: 14 }}>
+    <Pressable onPress={onPress} disabled={!onPress} style={({ pressed }) => [{ borderRadius: 16, backgroundColor: bg, borderColor: borda, borderWidth: 2, padding: 14, transform: [{ scale: pressed ? 0.98 : 1 }] }]}>
       <Text style={{ fontSize: 16, fontFamily: f.negrito, color: c.ink }}>{texto}</Text>
     </Pressable>
   );
