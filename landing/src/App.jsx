@@ -238,34 +238,34 @@ export default function App() {
   return (
     <>
       {/* Hero */}
-      <header id="topo" className="relative overflow-hidden px-6 pt-12 pb-20 sm:pt-16">
+      <header id="topo" className="relative overflow-hidden px-6 pt-8 pb-16 sm:pt-16 sm:pb-20">
         <Nuvens />
-        <div className="relative mx-auto grid max-w-5xl items-center gap-12 sm:grid-cols-2">
-          <div>
-            <img src="/media/logooficial.svg" alt="Sabiaa" className="mb-8 h-10 w-auto" />
-            <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+        <div className="relative mx-auto grid max-w-5xl items-center gap-4 sm:grid-cols-2 sm:gap-12">
+          <div className="text-center sm:text-left">
+            <img src="/media/logooficial.svg" alt="Sabiaa" className="mx-auto mb-5 h-9 w-auto sm:mx-0 sm:mb-8 sm:h-10" />
+            <h1 className="font-display text-3xl font-extrabold leading-tight sm:text-5xl">
               O celular não precisa ser <span className="text-violet">o inimigo</span> da sala de aula.
             </h1>
-            <p className="mt-6 text-xl font-semibold text-slate">
-              Sabiaa é um Sistema de Aprendizado e Bem-estar com Inteligência Artificial Acadêmica,
-              feito para escolas que querem ir além da proibição.
+            <p className="mt-4 text-lg font-semibold text-slate sm:mt-6 sm:text-xl">
+              Aprendizado e bem-estar com IA, para escolas que querem ir além da proibição.
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8 sm:justify-start sm:gap-4">
               <ShimmerButton href="#baixar" className="bg-violet text-white">
                 <span className="flex items-center gap-2"><Download className="size-5" strokeWidth={2.5} /> Baixar o app</span>
               </ShimmerButton>
               <Botao href="#proposta" variante="branco">Ver a proposta</Botao>
             </div>
-            <div className="mt-6 flex flex-wrap items-center gap-2 text-sm font-extrabold">
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-sm font-extrabold sm:mt-6 sm:justify-start">
               <span className="mr-1 text-slate">Demo web:</span>
               <a href="#painel-professor" className="rounded-xl bg-sky-soft px-3 py-2 text-sky-dark hover:brightness-95">Professor</a>
               <a href="#painel-gestao" className="rounded-xl bg-violet-mist px-3 py-2 text-violet-deep hover:brightness-95">Gestão</a>
             </div>
           </div>
+          {/* no mobile o Sabiá vem antes do texto, menor, para caber acima da dobra */}
           <LoopVideo
             src="/media/flying.mp4"
             loopStart={2}
-            className="mx-auto w-full max-w-sm rounded-3xl"
+            className="order-first mx-auto w-44 rounded-3xl sm:order-none sm:w-full sm:max-w-sm"
           />
         </div>
       </header>
@@ -326,7 +326,7 @@ export default function App() {
               {EIXOS.map(({ Icone, nome }) => (
                 <li
                   key={nome}
-                  className="flex items-center gap-2.5 rounded-2xl border-2 border-line bg-white px-4 py-3 font-extrabold"
+                  className="flex items-center gap-2 rounded-2xl border-2 border-line bg-white px-3 py-3 text-sm font-extrabold sm:gap-2.5 sm:px-4 sm:text-base"
                 >
                   <Icone className="size-5 shrink-0 text-violet" strokeWidth={2.5} />
                   {nome}
