@@ -5,6 +5,7 @@ import {
   Brain,
   ChartColumn,
   Check,
+  Download,
   GraduationCap,
   HeartPulse,
   Landmark,
@@ -150,6 +151,14 @@ const AGENTES = [
 
 const TIME = ['Camila Azevedo', 'Juan Pedro', 'Gabriel Richard', 'Mariana Holanda']
 
+function BaixarApp({ className = '' }) {
+  return (
+    <a href="/sabiaa.apk" download="sabiaa.apk" className={`btn-pilula gap-2 bg-violet-deep text-white ${className}`}>
+      <Download className="size-5" strokeWidth={2.5} /> Baixar app para Android
+    </a>
+  )
+}
+
 function Botao({ href, children, variante = 'violeta' }) {
   const estilos = {
     violeta: 'bg-violet text-white',
@@ -236,11 +245,13 @@ export default function App() {
               feito para escolas que querem ir além da proibição.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
+              <BaixarApp />
               <ShimmerButton href="#proposta" className="bg-violet text-white">
                 Ver a proposta
               </ShimmerButton>
               <Botao href="#problema" variante="branco">Ver o problema</Botao>
             </div>
+            <p className="mt-3 text-sm font-bold text-slate">APK · versão 1.0.0 · 73 MB</p>
             <div className="mt-6 flex flex-wrap items-center gap-2 text-sm font-extrabold">
               <span className="mr-1 text-slate">Demo web:</span>
               <a href="#painel-professor" className="rounded-xl bg-sky-soft px-3 py-2 text-sky-dark hover:brightness-95">Professor</a>
@@ -571,6 +582,7 @@ export default function App() {
           O celular deixa de ser uma distração quando passa a ter um propósito.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <BaixarApp />
           <a href="#painel-professor" className="btn-pilula bg-sky text-white">Explorar painel do professor</a>
           <a href="#painel-gestao" className="btn-pilula bg-violet text-white">Explorar painel da gestão</a>
         </div>
