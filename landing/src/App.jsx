@@ -349,7 +349,7 @@ export default function App() {
         </Titulo>
         <div className="grid gap-6 sm:grid-cols-3">
           {PERFIS.map((p, i) => (
-            <BlurFade key={p.nome} delay={i * 0.12} className="rounded-2xl border-2 border-line bg-white p-6">
+            <BlurFade key={p.nome} delay={i * 0.12} className="flex flex-col rounded-2xl border-2 border-line bg-white p-6">
               <span className={`flex size-12 items-center justify-center rounded-2xl text-white ${p.cor}`}>
                 <p.Icone className="size-6" strokeWidth={2.25} />
               </span>
@@ -362,7 +362,7 @@ export default function App() {
                   </li>
                 ))}
               </ul>
-              {p.nome !== 'Aluno' && <a href={p.nome === 'Professor' ? '#painel-professor' : '#painel-gestao'} className="mt-5 inline-flex items-center gap-1 text-sm font-extrabold text-violet hover:text-violet-deep">Abrir painel web <span aria-hidden>→</span></a>}
+              {p.nome !== 'Aluno' && <a href={p.nome === 'Professor' ? '#painel-professor' : '#painel-gestao'} className="mt-auto inline-flex items-center gap-1 pt-5 text-sm font-extrabold text-violet hover:text-violet-deep">Abrir painel web <span aria-hidden>→</span></a>}
             </BlurFade>
           ))}
         </div>
@@ -569,6 +569,13 @@ export default function App() {
         <p className="font-display mx-auto mt-8 max-w-2xl text-2xl font-extrabold leading-snug sm:text-3xl">
           O celular deixa de ser uma distração quando passa a ter um propósito.
         </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <a href="#painel-professor" className="btn-3d bg-sky text-white [--lip:var(--color-sky-dark)]">Explorar painel do professor</a>
+          <a href="#painel-gestao" className="btn-3d bg-violet text-white [--lip:var(--color-violet-dark)]">Explorar painel da gestão</a>
+        </div>
+        <a href="#topo" className="mt-8 inline-flex items-center gap-2 text-sm font-extrabold text-slate hover:text-violet">
+          ↑ Voltar ao topo
+        </a>
         <img src="/media/logo.svg" alt="Sabiaa" className="mx-auto mt-10 h-12 w-auto" />
       </footer>
     </>
