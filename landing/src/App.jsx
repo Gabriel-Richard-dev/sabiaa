@@ -5,7 +5,9 @@ import {
   Brain,
   ChartColumn,
   Check,
+  Container,
   Download,
+  Globe,
   GraduationCap,
   HeartPulse,
   Landmark,
@@ -153,6 +155,27 @@ const PASSOS = [
   'Toque em "Baixar APK" pelo celular Android.',
   'Abra o arquivo e permita instalar apps desta fonte, se o Android pedir.',
   'Abra o Sabiaa e escolha seu perfil: aluno, professor ou gestão.',
+]
+
+const STACK = [
+  {
+    Icone: Smartphone,
+    cor: 'bg-violet',
+    nome: 'App mobile',
+    itens: ['React Native 0.86 + Expo SDK 57', 'React 19.2', 'react-native-web para a versão web', 'expo-video, expo-font e @expo/vector-icons', 'Estado no próprio React, dados mockados', 'APK via expo prebuild + Gradle'],
+  },
+  {
+    Icone: Globe,
+    cor: 'bg-sky',
+    nome: 'Landing page',
+    itens: ['React 19.2 + Vite 8', 'Tailwind CSS 4', 'motion para animações', 'lucide-react para ícones', 'oxlint para lint', 'ffmpeg-static para os vídeos em loop'],
+  },
+  {
+    Icone: Container,
+    cor: 'bg-violet-deep',
+    nome: 'Infra',
+    itens: ['Docker multi-stage', 'node:22-alpine gera o build', 'nginx:alpine serve os arquivos', 'Docker Compose'],
+  },
 ]
 
 const TIME = ['Camila Azevedo', 'Juan Pedro', 'Gabriel Richard', 'Mariana Holanda']
@@ -560,6 +583,29 @@ export default function App() {
               ))}
             </ol>
           </div>
+        </div>
+      </Secao>
+
+      {/* Tecnologias */}
+      <Secao id="tecnologias">
+        <Titulo sub="O que usamos para construir o protótipo do Sabiaa.">Tecnologias</Titulo>
+        <div className="grid gap-6 sm:grid-cols-3">
+          {STACK.map((s, i) => (
+            <BlurFade key={s.nome} delay={i * 0.12} className="rounded-2xl border-2 border-line bg-white p-6">
+              <span className={`flex size-12 items-center justify-center rounded-2xl text-white ${s.cor}`}>
+                <s.Icone className="size-6" strokeWidth={2.25} />
+              </span>
+              <h3 className="font-display mt-4 text-xl font-extrabold">{s.nome}</h3>
+              <ul className="mt-3 space-y-2">
+                {s.itens.map((item) => (
+                  <li key={item} className="flex gap-2 font-semibold text-slate">
+                    <Check className="mt-1 size-4 shrink-0 text-violet" strokeWidth={3} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </BlurFade>
+          ))}
         </div>
       </Secao>
 

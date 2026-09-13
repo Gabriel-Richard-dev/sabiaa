@@ -47,6 +47,6 @@ npm run build     # gera dist/
 ### Docker
 
 ```bash
-docker compose up -d --build   # http://localhost:8080
+docker compose up -d --build   # http://localhost:8086
 docker compose down
 ```
