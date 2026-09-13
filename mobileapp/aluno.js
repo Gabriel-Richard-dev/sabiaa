@@ -80,8 +80,17 @@ const atalhos = [
   { icone: 'bullhorn', nome: 'Avisos', ir: (nav) => nav.abrir(Avisos) },
   { icone: 'palette', nome: 'Desafio', ir: (nav) => nav.abrir(Desafio) },
   { icone: 'account-group', nome: 'Comunidade', ir: (nav) => nav.irAba('Comunidade') },
-  { icone: 'brain', nome: 'Bem-estar', ir: (nav) => nav.abrir(BemEstar) },
+  { icone: 'brain', nome: 'Bem-estar', ir: (nav) => nav.irAba('Bem-estar') },
 ];
+
+// práticas de TCC; a do dia gira pela data
+const praticas = [
+  { id: 'emocoes', icone: 'emoticon-outline', titulo: 'Minhas emoções', desc: 'O que aconteceu e o que você sentiu' },
+  { id: 'pensamentos', icone: 'notebook-edit-outline', titulo: 'Registro de pensamentos', desc: 'Outro jeito de ver uma situação' },
+  { id: 'plano', icone: 'stairs-up', titulo: 'Plano de mudança', desc: 'Um hábito que você quer transformar' },
+  { id: 'respirar', icone: 'weather-windy', titulo: 'Respiração guiada', desc: 'Um minuto, quatro tempos' },
+];
+const praticaDoDia = () => praticas[Math.floor(Date.now() / 864e5) % praticas.length];
 
 function Inicio() {
   const s = useStore();
@@ -94,6 +103,7 @@ function Inicio() {
   const xadrez = comunidades[0];
   const indo = s.comunidades.includes(xadrez.id);
   const aoVivo = s.live.aberta && slides[s.live.slide].opcoes && !(s.live.slide in s.respondidas);
+  const pratica = praticaDoDia();
 
   return (
     <>
@@ -120,6 +130,16 @@ function Inicio() {
           </View>
         </Card>
       </Pressable>
+
+      <CardHome
+        icone={pratica.icone}
+        rotulo="BEM-ESTAR DO DIA"
+        titulo={pratica.titulo}
+        sub={[pratica.desc]}
+        botao="Começar"
+        feito={s.praticas.includes(pratica.id) && 'Feito hoje!'}
+        onPress={() => nav.abrir(Pratica, { id: pratica.id })}
+      />
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         {atalhos.map((a) => (
@@ -775,8 +795,7 @@ function Perfil() {
       <Notas />
 
       <Card style={{ gap: 0, paddingVertical: 4 }}>
-        <Linha primeira icone="brain" titulo="Bem-estar" desc="Como você está hoje?" onPress={() => nav.abrir(BemEstar)} />
-        <Linha icone="bullhorn" titulo="Avisos" desc={`${avisos.length - s.lidos.length} não lidos`} onPress={() => nav.abrir(Avisos)} />
+        <Linha primeira icone="bullhorn" titulo="Avisos" desc={`${avisos.length - s.lidos.length} não lidos`} onPress={() => nav.abrir(Avisos)} />
       </Card>
 
       <Card center style={{ backgroundColor: c.violetDeep, borderColor: c.violetDeep }}>
@@ -815,31 +834,104 @@ function Respiracao({ onFim }) {
   );
 }
 
-function Reflexao({ onFim }) {
+// fichas de perguntas e respostas livres: [pergunta, exemplo]
+const fichas = {
+  pensamentos: [
+    ['O que aconteceu?', 'Ex.: fui mal na prova'],
+    ['O que você pensou na hora?', 'Ex.: eu nunca vou aprender isso'],
+    ['Existe outro jeito de ver essa situação?', 'Ex.: posso pedir ajuda e estudar de outro jeito'],
+  ],
+  plano: [
+    ['Que hábito ou comportamento quero transformar?', 'Ex.: ficar no celular antes de dormir'],
+    ['Por que é importante para mim mudar isso?', 'Ex.: acordo cansado e perco a primeira aula'],
+    ['O que posso ganhar se mudar esse comportamento?', 'Ex.: mais energia e atenção na escola'],
+    ['Quais são os primeiros passos para começar?', 'Ex.: deixar o celular longe da cama às 22h'],
+    ['Que obstáculos podem surgir e como passar por eles?', 'Ex.: vontade de ver só mais um vídeo; pôr um alarme'],
+    ['Como vou acompanhar meu progresso?', 'Ex.: marcar no calendário os dias em que consegui'],
+  ],
+};
+
+function Ficha({ titulo, perguntas, onFim }) {
+  return (
+    <Card>
+      <H>{titulo}</H>
+      <T muted>Só você vê este registro.</T>
+      {perguntas.map(([p, ex]) => (
+        <View key={p} style={{ gap: 8 }}>
+          <T style={{ fontWeight: '700' }}>{p}</T>
+          <Campo multiline placeholder={ex} />
+        </View>
+      ))}
+      <Btn title="Guardar" onPress={onFim} />
+    </Card>
+  );
+}
+
+const emocoes = [
+  { nome: 'Alegria', icone: 'emoticon-happy-outline' },
+  { nome: 'Raiva', icone: 'emoticon-angry-outline' },
+  { nome: 'Nojo', icone: 'emoticon-sick-outline' },
+  { nome: 'Tristeza', icone: 'emoticon-cry-outline' },
+  { nome: 'Medo', icone: 'emoticon-frown-outline' },
+];
+
+function Emocoes({ onFim }) {
+  const [linhas, setLinhas] = useState([{ txt: '', em: [] }]);
+  const mudar = (k, m) => setLinhas((l) => l.map((x, j) => (j === k ? { ...x, ...m } : x)));
+  const marcar = (k, e) => mudar(k, { em: linhas[k].em.includes(e) ? linhas[k].em.filter((x) => x !== e) : [...linhas[k].em, e] });
+  return (
+    <Card>
+      <H>Minhas emoções</H>
+      <T muted>Escreva o que você fez ou o que aconteceu e marque o que sentiu. Pode marcar mais de uma.</T>
+      {linhas.map((l, k) => (
+        <View key={k} style={{ gap: 8, paddingTop: k ? 12 : 0, borderTopWidth: k ? 2 : 0, borderColor: c.line }}>
+          <Campo value={l.txt} onChangeText={(txt) => mudar(k, { txt })} placeholder="Ex.: apresentei um trabalho na frente da turma" />
+          <View style={{ flexDirection: 'row', gap: 6 }}>
+            {emocoes.map((e) => {
+              const on = l.em.includes(e.nome);
+              return (
+                <Pressable
+                  key={e.nome}
+                  onPress={() => marcar(k, e.nome)}
+                  accessibilityState={{ selected: on }}
+                  style={{ flex: 1, alignItems: 'center', paddingVertical: 6, borderRadius: 12, borderWidth: 2, borderColor: on ? c.violet : c.line, backgroundColor: on ? c.violetMist : c.snow }}
+                >
+                  <Icone name={e.icone} size={28} color={on ? c.violet : c.slate} />
+                  <Text numberOfLines={1} adjustsFontSizeToFit style={{ fontFamily: f.extra, fontSize: 11, color: on ? c.violet : c.slate }}>{e.nome}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+      ))}
+      <Btn title="Outro momento" icone="plus" color={c.violetDeep} onPress={() => setLinhas([...linhas, { txt: '', em: [] }])} />
+      <Btn title="Guardar" disabled={!linhas.some((l) => l.txt.trim() && l.em.length)} onPress={onFim} />
+    </Card>
+  );
+}
+
+function Pratica({ id }) {
+  const s = useStore();
+  const nav = useNav();
   const [ok, setOk] = useState(false);
+  const p = praticas.find((x) => x.id === id);
+  const fim = () => {
+    s.concluirPratica(id);
+    setOk(true);
+  };
   if (ok) {
     return (
       <Card center style={[destaque, { paddingVertical: 24 }]}>
-        <Anim nome="escrevendo" size={160} />
-        <H>Registro salvo</H>
-        <T muted style={{ textAlign: 'center' }}>Você pode voltar a ele quando quiser.</T>
-        <Btn title="Voltar" onPress={onFim} />
+        <Anim nome="feliz" size={160} />
+        <H>Prática concluída</H>
+        <T muted style={{ textAlign: 'center' }}>Cuidar de como você se sente também é aprender.</T>
+        <Btn title="Voltar" onPress={nav.voltar} />
       </Card>
     );
   }
-  return (
-    <Card>
-      <H>Registro de pensamentos</H>
-      <T muted>Só você vê este registro.</T>
-      <T style={{ fontWeight: '700' }}>O que aconteceu?</T>
-      <Campo multiline placeholder="Ex.: fui mal na prova" />
-      <T style={{ fontWeight: '700' }}>O que você pensou na hora?</T>
-      <Campo multiline placeholder="Ex.: eu nunca vou aprender isso" />
-      <T style={{ fontWeight: '700' }}>Existe outro jeito de ver essa situação?</T>
-      <Campo multiline placeholder="Ex.: posso pedir ajuda e estudar de outro jeito" />
-      <Btn title="Guardar" onPress={() => setOk(true)} />
-    </Card>
-  );
+  if (id === 'respirar') return <Respiracao onFim={fim} />;
+  if (id === 'emocoes') return <Emocoes onFim={fim} />;
+  return <Ficha titulo={p.titulo} perguntas={fichas[id]} onFim={fim} />;
 }
 
 function CanalAnonimo({ onFim }) {
@@ -871,12 +963,15 @@ const humoresAluno = [
 
 function BemEstar() {
   const s = useStore();
-  const [modo, setModo] = useState(null);
-  if (modo === 'respirar') return <Respiracao onFim={() => setModo(null)} />;
-  if (modo === 'refletir') return <Reflexao onFim={() => setModo(null)} />;
-  if (modo === 'anonimo') return <CanalAnonimo onFim={() => setModo(null)} />;
+  const nav = useNav();
+  const doDia = praticaDoDia();
   return (
     <>
+      <View>
+        <H>Bem-estar</H>
+        <T muted>Atividades rápidas para entender e cuidar do que você sente.</T>
+      </View>
+
       <Card style={[destaque, { gap: 12 }]}>
         <Rotulo icone="brain">COMO VOCÊ ESTÁ HOJE?</Rotulo>
         <View style={{ flexDirection: 'row', gap: 8 }}>
@@ -900,19 +995,31 @@ function BemEstar() {
               <H small>Obrigado por compartilhar</H>
               <Icone name="heart" size={20} color={c.violet} />
             </View>
-            <T>Quer fazer uma atividade rápida?</T>
+            <T>Quer fazer a prática do dia? {doDia.titulo}.</T>
             <View style={{ alignItems: 'flex-start' }}>
-              <Btn title="Começar" icone="weather-windy" onPress={() => setModo('respirar')} />
+              <Btn title="Começar" icone={doDia.icone} onPress={() => nav.abrir(Pratica, { id: doDia.id })} />
             </View>
             <T muted style={{ fontSize: 12 }}>Registrado sem identificação.</T>
           </View>
         )}
       </Card>
 
+      <Rotulo icone="brain">PRÁTICAS</Rotulo>
       <Card style={{ gap: 0, paddingVertical: 4 }}>
-        <Linha primeira icone="weather-windy" titulo="Respiração guiada" desc="Um minuto, quatro tempos" onPress={() => setModo('respirar')} />
-        <Linha icone="notebook-edit-outline" titulo="Registro de pensamentos" desc="O que aconteceu e como você viu" onPress={() => setModo('refletir')} />
-        <Linha icone="message-lock-outline" titulo="Canal anônimo" desc="Escreva sem se identificar" onPress={() => setModo('anonimo')} />
+        {praticas.map((p, i) => (
+          <Linha
+            key={p.id}
+            primeira={i === 0}
+            icone={p.icone}
+            titulo={p.id === doDia.id ? `${p.titulo} · do dia` : p.titulo}
+            desc={s.praticas.includes(p.id) ? 'Feita hoje' : p.desc}
+            onPress={() => nav.abrir(Pratica, { id: p.id })}
+          />
+        ))}
+      </Card>
+
+      <Card style={{ paddingVertical: 4 }}>
+        <Linha primeira icone="message-lock-outline" titulo="Canal anônimo" desc="Escreva sem se identificar" onPress={() => nav.abrir(CanalAnonimo, { onFim: nav.voltar })} />
       </Card>
 
       <Card style={{ flexDirection: 'row', gap: 10 }}>
@@ -985,6 +1092,7 @@ export default function AppAluno() {
         { key: 'Início', icone: 'home-variant-outline', Tela: Inicio },
         { key: 'Aprender', icone: 'book-open-variant', Tela: Aprender },
         { key: 'Comunidade', icone: 'account-group-outline', Tela: Comunidade },
+        { key: 'Bem-estar', icone: 'brain', Tela: BemEstar },
         { key: 'Perfil', icone: 'account-circle-outline', Tela: Perfil },
       ]}
     >

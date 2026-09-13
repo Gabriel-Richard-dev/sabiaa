@@ -32,6 +32,7 @@ function useSabia() {
   const [comunidades, setComunidades] = useState([]);
   const [desenho, setDesenho] = useState(null);
   const [lidos, setLidos] = useState([]);
+  const [praticas, setPraticas] = useState([]);
 
   // colegas fictícios respondendo aos poucos enquanto a pergunta está aberta
   useEffect(() => {
@@ -56,7 +57,7 @@ function useSabia() {
   return {
     perfil, entrar: setPerfil, sair: () => setPerfil(null),
     xp, nivel: nv, equip, params, setParams, atividades, feitas, eventos, eventosFeitos,
-    live, respondidas, humorHoje, mensagens, comunidades, desenho, lidos, toast,
+    live, respondidas, humorHoje, mensagens, comunidades, desenho, lidos, praticas, toast,
 
     fecharToast: () => setToast(null),
     // nível novo ainda não comemorado abre o modal de recompensa
@@ -90,6 +91,11 @@ function useSabia() {
       if (desenho) return;
       setDesenho(pontos);
       ganhar(30, 'Desafio concluído! Seu desenho está no mural.');
+    },
+    concluirPratica: (id) => {
+      if (praticas.includes(id)) return;
+      setPraticas([...praticas, id]);
+      ganhar(15, 'Cuidar de como você se sente também conta!');
     },
     lerAviso: (id) => setLidos((l) => (l.includes(id) ? l : [...l, id])),
 
