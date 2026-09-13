@@ -149,12 +149,18 @@ const AGENTES = [
   { Icone: Landmark, nome: 'Governo', papel: 'Apoia a implementação em escala, financia ou contrata a solução e usa indicadores agregados para orientar políticas públicas.', cor: 'bg-violet-deep' },
 ]
 
+const PASSOS = [
+  'Toque em "Baixar APK" pelo celular Android.',
+  'Abra o arquivo e permita instalar apps desta fonte, se o Android pedir.',
+  'Abra o Sabiaa e escolha seu perfil: aluno, professor ou gestão.',
+]
+
 const TIME = ['Camila Azevedo', 'Juan Pedro', 'Gabriel Richard', 'Mariana Holanda']
 
 function BaixarApp({ className = '' }) {
   return (
     <a href="/sabiaa.apk" download="sabiaa.apk" className={`btn-pilula gap-2 bg-violet-deep text-white ${className}`}>
-      <Download className="size-5" strokeWidth={2.5} /> Baixar app para Android
+      <Download className="size-5" strokeWidth={2.5} /> Baixar APK
     </a>
   )
 }
@@ -232,36 +238,34 @@ export default function App() {
   return (
     <>
       {/* Hero */}
-      <header id="topo" className="relative overflow-hidden px-6 pt-12 pb-20 sm:pt-16">
+      <header id="topo" className="relative overflow-hidden px-6 pt-8 pb-16 sm:pt-16 sm:pb-20">
         <Nuvens />
-        <div className="relative mx-auto grid max-w-5xl items-center gap-12 sm:grid-cols-2">
-          <div>
-            <img src="/media/logooficial.svg" alt="Sabiaa" className="mb-8 h-10 w-auto" />
-            <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+        <div className="relative mx-auto grid max-w-5xl items-center gap-4 sm:grid-cols-2 sm:gap-12">
+          <div className="text-center sm:text-left">
+            <img src="/media/logooficial.svg" alt="Sabiaa" className="mx-auto mb-5 h-9 w-auto sm:mx-0 sm:mb-8 sm:h-10" />
+            <h1 className="font-display text-3xl font-extrabold leading-tight sm:text-5xl">
               O celular não precisa ser <span className="text-violet">o inimigo</span> da sala de aula.
             </h1>
-            <p className="mt-6 text-xl font-semibold text-slate">
-              Sabiaa é um Sistema de Aprendizado e Bem-estar com Inteligência Artificial Acadêmica,
-              feito para escolas que querem ir além da proibição.
+            <p className="mt-4 text-lg font-semibold text-slate sm:mt-6 sm:text-xl">
+              Aprendizado e bem-estar com IA, para escolas que querem ir além da proibição.
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <BaixarApp />
-              <ShimmerButton href="#proposta" className="bg-violet text-white">
-                Ver a proposta
+            <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8 sm:justify-start sm:gap-4">
+              <ShimmerButton href="#baixar" className="bg-violet text-white">
+                <span className="flex items-center gap-2"><Download className="size-5" strokeWidth={2.5} /> Baixar o app</span>
               </ShimmerButton>
-              <Botao href="#problema" variante="branco">Ver o problema</Botao>
+              <Botao href="#proposta" variante="branco">Ver a proposta</Botao>
             </div>
-            <p className="mt-3 text-sm font-bold text-slate">APK · versão 1.0.0 · 73 MB</p>
-            <div className="mt-6 flex flex-wrap items-center gap-2 text-sm font-extrabold">
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-sm font-extrabold sm:mt-6 sm:justify-start">
               <span className="mr-1 text-slate">Demo web:</span>
               <a href="#painel-professor" className="rounded-xl bg-sky-soft px-3 py-2 text-sky-dark hover:brightness-95">Professor</a>
               <a href="#painel-gestao" className="rounded-xl bg-violet-mist px-3 py-2 text-violet-deep hover:brightness-95">Gestão</a>
             </div>
           </div>
+          {/* no mobile o Sabiá vem antes do texto, menor, para caber acima da dobra */}
           <LoopVideo
             src="/media/flying.mp4"
             loopStart={2}
-            className="mx-auto w-full max-w-sm rounded-3xl"
+            className="order-first mx-auto w-44 rounded-3xl sm:order-none sm:w-full sm:max-w-sm"
           />
         </div>
       </header>
@@ -322,7 +326,7 @@ export default function App() {
               {EIXOS.map(({ Icone, nome }) => (
                 <li
                   key={nome}
-                  className="flex items-center gap-2.5 rounded-2xl border-2 border-line bg-white px-4 py-3 font-extrabold"
+                  className="flex items-center gap-2 rounded-2xl border-2 border-line bg-white px-3 py-3 text-sm font-extrabold sm:gap-2.5 sm:px-4 sm:text-base"
                 >
                   <Icone className="size-5 shrink-0 text-violet" strokeWidth={2.5} />
                   {nome}
@@ -576,13 +580,39 @@ export default function App() {
         </div>
       </Secao>
 
+      {/* Download do app */}
+      <Secao id="baixar" cor="violet-mist">
+        <div className="grid items-center gap-10 sm:grid-cols-2">
+          <LoopVideo src="/media/celular.mp4" className="mx-auto w-full max-w-sm rounded-3xl" />
+          <div>
+            <h2 className="font-display text-3xl font-extrabold sm:text-4xl">Leve o Sabiaa no bolso</h2>
+            <p className="mt-4 text-lg font-semibold text-slate">
+              O app reúne os três perfis: aluno, professor e gestão. Instale e explore a versão final.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <BaixarApp />
+              <span className="text-sm font-bold text-slate">Android 7+ · v1.0.0 · 73 MB</span>
+            </div>
+            <ol className="mt-8 space-y-3">
+              {PASSOS.map((passo, i) => (
+                <li key={passo} className="flex gap-3 font-semibold text-slate">
+                  <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-violet-soft text-sm font-extrabold text-violet-deep">
+                    {i + 1}
+                  </span>
+                  {passo}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </Secao>
+
       <footer className="border-t-2 border-line px-6 py-16 text-center">
         <LoopVideo src="/media/feliz.mp4" className="mx-auto w-40 rounded-3xl" />
         <p className="font-display mx-auto mt-8 max-w-2xl text-2xl font-extrabold leading-snug sm:text-3xl">
           O celular deixa de ser uma distração quando passa a ter um propósito.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <BaixarApp />
           <a href="#painel-professor" className="btn-pilula bg-sky text-white">Explorar painel do professor</a>
           <a href="#painel-gestao" className="btn-pilula bg-violet text-white">Explorar painel da gestão</a>
         </div>

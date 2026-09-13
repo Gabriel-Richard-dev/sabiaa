@@ -38,10 +38,10 @@ export function NumberTicker({ value, suffix = '', className }) {
   return <span ref={ref} className={className}>0{suffix}</span>
 }
 
-// posição, largura e duração do balanço de cada nuvem
+// posição, largura e duração do balanço de cada nuvem; as de cima somem no mobile
 const NUVENS = [
-  'top-6 -left-10 w-48 opacity-60 motion-safe:animate-[nuvem_16s_ease-in-out_infinite]',
-  'top-24 right-[8%] w-32 opacity-40 motion-safe:animate-[nuvem_12s_ease-in-out_infinite]',
+  'hidden sm:block top-6 -left-10 w-48 opacity-60 motion-safe:animate-[nuvem_16s_ease-in-out_infinite]',
+  'hidden sm:block top-24 right-[8%] w-32 opacity-40 motion-safe:animate-[nuvem_12s_ease-in-out_infinite]',
   'bottom-10 left-[38%] w-40 opacity-35 motion-safe:animate-[nuvem_19s_ease-in-out_infinite]',
   'bottom-24 -right-12 w-56 opacity-50 motion-safe:animate-[nuvem_22s_ease-in-out_infinite]',
 ]
