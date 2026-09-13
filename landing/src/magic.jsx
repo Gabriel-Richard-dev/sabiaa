@@ -69,7 +69,7 @@ export function Nuvens() {
 /** ShimmerButton: botão 3D com um brilho que atravessa em loop. */
 export function ShimmerButton({ href, children, className = '' }) {
   return (
-    <a href={href} className={`btn-3d relative overflow-hidden ${className}`}>
+    <a href={href} className={`btn-pilula relative overflow-hidden ${className}`}>
       <span className="relative z-10">{children}</span>
       <span className="absolute inset-0 -translate-x-full animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
     </a>

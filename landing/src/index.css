@@ -35,14 +35,20 @@ html { scroll-behavior: smooth; }
 body { font-family: var(--font-sans); color: var(--color-ink); background: var(--color-snow); }
 button:not(:disabled) { cursor: pointer; }
 
-/* botão 3D: lip de 4px que some no :active */
-.btn-3d {
-  @apply inline-flex items-center justify-center rounded-2xl px-7 py-3.5 font-extrabold
-         transition-[filter,transform,box-shadow] duration-150 select-none;
-  box-shadow: 0 4px 0 var(--lip);
+/* botão em pílula; encolhe no :active */
+.btn-pilula {
+  @apply inline-flex items-center justify-center px-7 py-3.5 font-extrabold
+         transition-[filter,transform] duration-150 select-none;
+  border-radius: 9999px;
 }
-.btn-3d:hover { filter: brightness(1.05); }
-.btn-3d:active { transform: translateY(4px); box-shadow: 0 0 0 var(--lip); }
+.btn-pilula:hover { filter: brightness(1.06); }
+.btn-pilula:active { transform: scale(.97); }
+
+/* fio: trilho fino com o ponto de pouso no fim do progresso; cor via --cor */
+.fio { @apply relative mx-2 flex h-4 items-center; }
+.fio > i { @apply h-1 w-full rounded-full bg-line; }
+.fio > i > i { @apply block h-full rounded-full bg-(--cor); }
+.fio > b { @apply absolute size-4 -translate-x-1/2 rounded-full border-[3px] border-(--cor) bg-white; }
 
 @keyframes nuvem {
   50% { transform: translateX(28px); }

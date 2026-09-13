@@ -46,7 +46,7 @@ function Slides() {
       {sl.opcoes && !aberta && (
         <Card>
           {sl.opcoes.map((o) => <Opcao key={o} texto={o} />)}
-          <Btn title="Liberar para os celulares" color={c.mint} lip={c.mintDark} onPress={s.abrirPergunta} />
+          <Btn title="Liberar para os celulares" color={c.mint} onPress={s.abrirPergunta} />
         </Card>
       )}
 
@@ -67,7 +67,7 @@ function Slides() {
               </View>
             );
           })}
-          <Btn title="Encerrar pergunta" color={c.coral} lip={c.coralDark} onPress={s.fecharPergunta} />
+          <Btn title="Encerrar pergunta" color={c.coral} onPress={s.fecharPergunta} />
           <T muted style={{ fontSize: 12, textAlign: 'center' }}>Para testar, troque de perfil e responda como aluno.</T>
         </Card>
       )}
@@ -112,7 +112,7 @@ function NovaAtividade() {
         </View>
       ))}
       <T muted style={{ fontSize: 12 }}>Toque no círculo para marcar a resposta certa.</T>
-      <Btn title="+ Adicionar outra pergunta" color={c.sky} lip={c.skyDark} disabled={!qOk} onPress={() => { setPerguntas(todas); setQ(novaPergunta()); }} />
+      <Btn title="+ Adicionar outra pergunta" color={c.sky} disabled={!qOk} onPress={() => { setPerguntas(todas); setQ(novaPergunta()); }} />
       <Btn title="Publicar para o 9º A" disabled={!titulo.trim() || todas.length === 0} onPress={publicar} />
     </Card>
   );

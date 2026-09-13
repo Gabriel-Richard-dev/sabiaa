@@ -268,7 +268,7 @@ function Quiz({ at }) {
         ))}
         {esc != null && <Btn title={i + 1 === at.perguntas.length ? 'Finalizar' : 'Próxima'} onPress={proxima} />}
       </Card>
-      {ajuda ? <ChatIA contexto={q.p} /> : <Btn icone="creation" title="Ajuda do Sabiá" color={c.violetDeep} lip={c.ink} onPress={() => setAjuda(true)} />}
+      {ajuda ? <ChatIA contexto={q.p} /> : <Btn icone="creation" title="Ajuda do Sabiá" color={c.violetDeep} onPress={() => setAjuda(true)} />}
     </>
   );
 }
@@ -289,7 +289,7 @@ function AtividadeCard({ a }) {
       ) : (
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           <Btn title="Começar" onPress={() => nav.abrir(Quiz, { at: a })} />
-          <Btn icone="creation" title="Ajuda do Sabiá" color={c.violetDeep} lip={c.ink} onPress={() => nav.abrir(ChatIA, { contexto: a.titulo })} />
+          <Btn icone="creation" title="Ajuda do Sabiá" color={c.violetDeep} onPress={() => nav.abrir(ChatIA, { contexto: a.titulo })} />
         </View>
       )}
     </Card>
@@ -502,7 +502,7 @@ function Desenho({ onEnviar, onCancelar }) {
         </Pressable>
       </View>
       <Btn title="Enviar para o mural" icone="send" disabled={!pontos.length} onPress={() => onEnviar(pontos)} />
-      <Btn title="Cancelar" color={c.slate} lip={c.ink} onPress={onCancelar} />
+      <Btn title="Cancelar" color={c.slate} onPress={onCancelar} />
     </Card>
   );
 }
@@ -727,7 +727,7 @@ function Personalizar() {
                 key={it.id}
                 disabled={!livre}
                 onPress={() => s.vestir(it)}
-                style={{ width: '48%', alignItems: 'center', gap: 4, padding: 12, borderRadius: 12, borderWidth: 2, borderBottomWidth: 4, borderColor: usando ? c.violet : c.line, backgroundColor: usando ? c.violetMist : c.snow, opacity: livre ? 1 : 0.6 }}
+                style={{ width: '48%', alignItems: 'center', gap: 4, padding: 12, borderRadius: 16, borderWidth: 2, borderColor: usando ? c.violet : c.line, backgroundColor: usando ? c.violetMist : c.snow, opacity: livre ? 1 : 0.6 }}
               >
                 <Icone name={it.icone} size={44} color={livre ? it.cor : c.hare} />
                 <T style={{ fontWeight: '800', fontSize: 14, textAlign: 'center' }}>{it.nome}</T>
@@ -857,7 +857,7 @@ function CanalAnonimo({ onFim }) {
           <T muted style={{ fontSize: 12 }}>Enviada sem identificação</T>
         </View>
       ))}
-      <Btn title="Voltar" color={c.slate} lip={c.ink} onPress={onFim} />
+      <Btn title="Voltar" color={c.slate} onPress={onFim} />
     </Card>
   );
 }
@@ -970,7 +970,7 @@ function Recompensa() {
               />
             </View>
           ))}
-          <Btn title="Continuar" color={c.slate} lip={c.ink} onPress={s.fecharRecompensa} style={{ alignSelf: 'stretch' }} />
+          <Btn title="Continuar" color={c.slate} onPress={s.fecharRecompensa} style={{ alignSelf: 'stretch' }} />
         </Card>
       </View>
     </Modal>

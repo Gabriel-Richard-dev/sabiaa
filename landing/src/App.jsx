@@ -152,12 +152,12 @@ const TIME = ['Camila Azevedo', 'Juan Pedro', 'Gabriel Richard', 'Mariana Holand
 
 function Botao({ href, children, variante = 'violeta' }) {
   const estilos = {
-    violeta: 'bg-violet text-white [--lip:var(--color-violet-dark)]',
-    azul: 'bg-sky text-white [--lip:var(--color-sky-dark)]',
-    branco: 'bg-white text-ink border-2 border-line [--lip:var(--color-line)]',
+    violeta: 'bg-violet text-white',
+    azul: 'bg-sky text-white',
+    branco: 'bg-white text-ink border-2 border-line',
   }
   return (
-    <a href={href} className={`btn-3d ${estilos[variante]}`}>
+    <a href={href} className={`btn-pilula ${estilos[variante]}`}>
       {children}
     </a>
   )
@@ -236,7 +236,7 @@ export default function App() {
               feito para escolas que querem ir além da proibição.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <ShimmerButton href="#proposta" className="bg-violet text-white [--lip:var(--color-violet-dark)]">
+              <ShimmerButton href="#proposta" className="bg-violet text-white">
                 Ver a proposta
               </ShimmerButton>
               <Botao href="#problema" variante="branco">Ver o problema</Botao>
@@ -409,8 +409,9 @@ export default function App() {
               <p className="font-display text-2xl font-extrabold">Nível 6</p>
               <p className="font-extrabold text-violet">840 XP</p>
             </div>
-            <div className="mt-3 h-4 overflow-hidden rounded-full bg-violet-soft">
-              <div className="h-full w-[84%] rounded-full bg-violet" />
+            <div className="fio mt-3" style={{ '--cor': 'var(--color-violet)' }}>
+              <i><i style={{ width: '84%' }} /></i>
+              <b style={{ left: '84%' }} />
             </div>
             <p className="mt-2 text-sm font-semibold text-slate">160 XP para a próxima recompensa</p>
             <div className="mt-6 space-y-3">
@@ -570,8 +571,8 @@ export default function App() {
           O celular deixa de ser uma distração quando passa a ter um propósito.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <a href="#painel-professor" className="btn-3d bg-sky text-white [--lip:var(--color-sky-dark)]">Explorar painel do professor</a>
-          <a href="#painel-gestao" className="btn-3d bg-violet text-white [--lip:var(--color-violet-dark)]">Explorar painel da gestão</a>
+          <a href="#painel-professor" className="btn-pilula bg-sky text-white">Explorar painel do professor</a>
+          <a href="#painel-gestao" className="btn-pilula bg-violet text-white">Explorar painel da gestão</a>
         </div>
         <a href="#topo" className="mt-8 inline-flex items-center gap-2 text-sm font-extrabold text-slate hover:text-violet">
           ↑ Voltar ao topo
