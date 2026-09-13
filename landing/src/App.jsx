@@ -149,12 +149,18 @@ const AGENTES = [
   { Icone: Landmark, nome: 'Governo', papel: 'Apoia a implementação em escala, financia ou contrata a solução e usa indicadores agregados para orientar políticas públicas.', cor: 'bg-violet-deep' },
 ]
 
+const PASSOS = [
+  'Toque em "Baixar APK" pelo celular Android.',
+  'Abra o arquivo e permita instalar apps desta fonte, se o Android pedir.',
+  'Abra o Sabiaa e escolha seu perfil: aluno, professor ou gestão.',
+]
+
 const TIME = ['Camila Azevedo', 'Juan Pedro', 'Gabriel Richard', 'Mariana Holanda']
 
 function BaixarApp({ className = '' }) {
   return (
     <a href="/sabiaa.apk" download="sabiaa.apk" className={`btn-pilula gap-2 bg-violet-deep text-white ${className}`}>
-      <Download className="size-5" strokeWidth={2.5} /> Baixar app para Android
+      <Download className="size-5" strokeWidth={2.5} /> Baixar APK
     </a>
   )
 }
@@ -245,13 +251,11 @@ export default function App() {
               feito para escolas que querem ir além da proibição.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <BaixarApp />
-              <ShimmerButton href="#proposta" className="bg-violet text-white">
-                Ver a proposta
+              <ShimmerButton href="#baixar" className="bg-violet text-white">
+                <span className="flex items-center gap-2"><Download className="size-5" strokeWidth={2.5} /> Baixar o app</span>
               </ShimmerButton>
-              <Botao href="#problema" variante="branco">Ver o problema</Botao>
+              <Botao href="#proposta" variante="branco">Ver a proposta</Botao>
             </div>
-            <p className="mt-3 text-sm font-bold text-slate">APK · versão 1.0.0 · 73 MB</p>
             <div className="mt-6 flex flex-wrap items-center gap-2 text-sm font-extrabold">
               <span className="mr-1 text-slate">Demo web:</span>
               <a href="#painel-professor" className="rounded-xl bg-sky-soft px-3 py-2 text-sky-dark hover:brightness-95">Professor</a>
@@ -576,13 +580,39 @@ export default function App() {
         </div>
       </Secao>
 
+      {/* Download do app */}
+      <Secao id="baixar" cor="violet-mist">
+        <div className="grid items-center gap-10 sm:grid-cols-2">
+          <LoopVideo src="/media/celular.mp4" className="mx-auto w-full max-w-sm rounded-3xl" />
+          <div>
+            <h2 className="font-display text-3xl font-extrabold sm:text-4xl">Leve o Sabiaa no bolso</h2>
+            <p className="mt-4 text-lg font-semibold text-slate">
+              O app reúne os três perfis: aluno, professor e gestão. Instale e explore a versão final.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <BaixarApp />
+              <span className="text-sm font-bold text-slate">Android 7+ · v1.0.0 · 73 MB</span>
+            </div>
+            <ol className="mt-8 space-y-3">
+              {PASSOS.map((passo, i) => (
+                <li key={passo} className="flex gap-3 font-semibold text-slate">
+                  <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-violet-soft text-sm font-extrabold text-violet-deep">
+                    {i + 1}
+                  </span>
+                  {passo}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </Secao>
+
       <footer className="border-t-2 border-line px-6 py-16 text-center">
         <LoopVideo src="/media/feliz.mp4" className="mx-auto w-40 rounded-3xl" />
         <p className="font-display mx-auto mt-8 max-w-2xl text-2xl font-extrabold leading-snug sm:text-3xl">
           O celular deixa de ser uma distração quando passa a ter um propósito.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <BaixarApp />
           <a href="#painel-professor" className="btn-pilula bg-sky text-white">Explorar painel do professor</a>
           <a href="#painel-gestao" className="btn-pilula bg-violet text-white">Explorar painel da gestão</a>
         </div>
