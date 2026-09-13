@@ -33,6 +33,7 @@
 
 html { scroll-behavior: smooth; }
 body { font-family: var(--font-sans); color: var(--color-ink); background: var(--color-snow); }
+button:not(:disabled) { cursor: pointer; }
 
 /* botão 3D: lip de 4px que some no :active */
 .btn-3d {
