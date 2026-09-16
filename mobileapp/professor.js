@@ -9,13 +9,13 @@ function Turmas() {
   const alunos = [{ nome: 'Gabriel', xp: s.xp, participacao: 70 + Object.keys(s.respondidas).length * 10 }, ...alunos9A];
   return turmas.map((t) => (
     <Card key={t.id}>
-      <Pressable onPress={() => setAberta(aberta === t.id ? null : t.id)} style={{ gap: 6 }}>
+      <Pressable onPress={() => setAberta(aberta === t.id ? null : t.id)} accessibilityRole="button" accessibilityLabel={`${t.nome}, ${t.alunos} alunos, participação ${t.participacao}%`} accessibilityState={{ expanded: aberta === t.id }} style={{ gap: 6 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <H small>{t.nome}</H>
           <T muted>{t.alunos} alunos · média {t.media}</T>
         </View>
         <T muted style={{ fontSize: 13 }}>Participação {t.participacao}%</T>
-        <Bar value={t.participacao} color={c.sky} />
+        <Bar value={t.participacao} color={c.sky} label={`Participação da turma ${t.nome}`} />
       </Pressable>
       {aberta === t.id && t.id === '9A' &&
         alunos.map((a) => (
@@ -23,7 +23,7 @@ function Turmas() {
             <T style={{ flex: 1 }}>{a.nome}</T>
             <T muted style={{ width: 60, fontSize: 13 }}>{a.xp} XP</T>
             <View style={{ width: 90 }}>
-              <Bar value={Math.min(a.participacao, 100)} color={a.participacao >= 75 ? c.mint : c.amber} />
+              <Bar value={Math.min(a.participacao, 100)} color={a.participacao >= 75 ? c.mint : c.amber} label={`Participação de ${a.nome}`} />
             </View>
           </View>
         ))}
@@ -53,7 +53,7 @@ function Slides() {
       {sl.opcoes && aberta && (
         <Card>
           <H small>{respostas.length}/{TOTAL_TURMA} responderam</H>
-          <Bar value={respostas.length} max={TOTAL_TURMA} color={c.sky} />
+          <Bar value={respostas.length} max={TOTAL_TURMA} color={c.sky} label="Alunos que responderam" />
           {sl.opcoes.map((o, i) => {
             const n = respostas.filter((r) => r === i).length;
             return (
@@ -63,7 +63,7 @@ function Slides() {
                   {sl.certa === i && <Icone name="check" size={18} color={c.mint} />}
                   <T muted>{n}</T>
                 </View>
-                <Bar value={n} max={respostas.length} color={sl.certa === i ? c.mint : c.violet} />
+                <Bar value={n} max={respostas.length} color={sl.certa === i ? c.mint : c.violet} label={`Respostas para ${o}`} />
               </View>
             );
           })}
@@ -99,16 +99,16 @@ function NovaAtividade() {
   return (
     <Card>
       <H small>Nova atividade extra</H>
-      <Campo value={titulo} onChangeText={setTitulo} placeholder="Título" />
-      <Campo value={desc} onChangeText={setDesc} placeholder="Descrição" />
+      <Campo label="Título da atividade" value={titulo} onChangeText={setTitulo} placeholder="Título" />
+      <Campo label="Descrição da atividade" value={desc} onChangeText={setDesc} placeholder="Descrição" />
       <T muted>{perguntas.length} pergunta(s) adicionada(s)</T>
-      <Campo value={q.p} onChangeText={(p) => setQ({ ...q, p })} placeholder={`Pergunta ${perguntas.length + 1}`} />
+      <Campo label={`Pergunta ${perguntas.length + 1}`} value={q.p} onChangeText={(p) => setQ({ ...q, p })} placeholder={`Pergunta ${perguntas.length + 1}`} />
       {q.opcoes.map((o, i) => (
         <View key={i} style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-          <Pressable onPress={() => setQ({ ...q, certa: i })} hitSlop={8}>
-            <Icone name={q.certa === i ? 'check-circle' : 'checkbox-blank-circle-outline'} size={26} color={q.certa === i ? c.mint : c.hare} />
+          <Pressable onPress={() => setQ({ ...q, certa: i })} accessibilityRole="radio" accessibilityLabel={`Marcar opção ${i + 1} como resposta correta`} accessibilityState={{ checked: q.certa === i }} hitSlop={8} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
+            <Icone accessible={false} name={q.certa === i ? 'check-circle' : 'checkbox-blank-circle-outline'} size={26} color={q.certa === i ? c.mint : c.hare} />
           </Pressable>
-          <Campo style={{ flex: 1 }} value={o} onChangeText={(v) => setQ({ ...q, opcoes: q.opcoes.map((x, k) => (k === i ? v : x)) })} placeholder={`Opção ${i + 1}`} />
+          <Campo label={`Texto da opção ${i + 1}`} style={{ flex: 1 }} value={o} onChangeText={(v) => setQ({ ...q, opcoes: q.opcoes.map((x, k) => (k === i ? v : x)) })} placeholder={`Opção ${i + 1}`} />
         </View>
       ))}
       <T muted style={{ fontSize: 12 }}>Toque no círculo para marcar a resposta certa.</T>
@@ -131,7 +131,7 @@ function Atividades() {
           <Card key={a.id}>
             <H small>{a.titulo}</H>
             <T muted>{a.perguntas.length} questões · {n}/{TOTAL_TURMA} concluíram</T>
-            <Bar value={n} max={TOTAL_TURMA} color={c.mint} />
+            <Bar value={n} max={TOTAL_TURMA} color={c.mint} label={`Conclusão da atividade ${a.titulo}`} />
             {feita && <T style={{ fontSize: 13 }}>Gabriel: {s.feitas[a.id]}/{a.perguntas.length} acertos</T>}
           </Card>
         );

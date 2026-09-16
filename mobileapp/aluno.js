@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Modal, Pressable, Text, View } from 'react-native';
+import { AccessibilityInfo, Animated, Modal, Pressable, Text, View } from 'react-native';
 import { Anim, Bar, Btn, c, Campo, Card, f, H, Icone, Opcao, Sabia, Shell, Stat, T, useNav, useStore } from './ui';
 import { ALUNO, avisos, categorias, comunidades, desenhos, iaPadrao, iaRespostas, itens, notas, slides } from './mock';
 
@@ -36,7 +36,7 @@ function Info({ icone, children }) {
 function IconeCaixa({ name, size = 44 }) {
   return (
     <View style={{ width: size, height: size, borderRadius: size * 0.28, backgroundColor: c.violetMist, alignItems: 'center', justifyContent: 'center' }}>
-      <Icone name={name} size={size * 0.55} color={c.violet} />
+      <Icone accessible={false} name={name} size={size * 0.55} color={c.violet} />
     </View>
   );
 }
@@ -44,23 +44,23 @@ function IconeCaixa({ name, size = 44 }) {
 // linha clicável de lista: ícone, título, descrição e seta
 function Linha({ icone, titulo, desc, onPress, primeira }) {
   return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, borderTopWidth: primeira ? 0 : 2, borderColor: c.line }}>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={titulo} accessibilityHint={desc || 'Abre esta seção'} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, minHeight: 64, borderTopWidth: primeira ? 0 : 2, borderColor: c.line }}>
       <IconeCaixa name={icone} />
       <View style={{ flex: 1 }}>
         <T style={{ fontWeight: '800' }}>{titulo}</T>
         {desc ? <T muted style={{ fontSize: 13 }}>{desc}</T> : null}
       </View>
-      <Icone name="chevron-right" size={24} color={c.hare} />
+      <Icone accessible={false} name="chevron-right" size={24} color={c.hare} />
     </Pressable>
   );
 }
 
-const destaque = { backgroundColor: c.violetMist, borderColor: c.violetSoft };
+const destaque = () => ({ backgroundColor: c.violetMist, borderColor: c.violetSoft });
 
 // cartão da home: rótulo, título, linhas e um botão (ou o selo de "feito")
 function CardHome({ icone, rotulo, titulo, sub = [], botao, onPress, feito, escuro }) {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable accessible={false} onPress={onPress}>
       <Card style={[{ gap: 6 }, escuro && { backgroundColor: c.violetDeep, borderColor: c.violetDeep, borderBottomWidth: 6 }]}>
         <Rotulo icone={icone} cor={escuro ? c.violetSoft : c.violet}>{rotulo}</Rotulo>
         <H style={escuro && { color: c.snow }}>{titulo}</H>
@@ -112,8 +112,8 @@ function Inicio() {
         <T muted style={{ fontSize: 17 }}>Vamos continuar?</T>
       </View>
 
-      <Pressable onPress={() => nav.abrir(Personalizar)}>
-        <Card style={[destaque, { borderBottomWidth: 6, gap: 10 }]}>
+      <Pressable accessibilityRole="button" accessibilityLabel="Personalizar seu Sabiá" accessibilityHint="Abre os itens e roupas do Sabiá" onPress={() => nav.abrir(Personalizar)}>
+        <Card style={[destaque(), { borderBottomWidth: 6, gap: 10 }]}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Sabia size={150} equip={s.equip} />
             <View style={{ flex: 1, gap: 2 }}>
@@ -143,11 +143,11 @@ function Inicio() {
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         {atalhos.map((a) => (
-          <Pressable key={a.nome} onPress={() => a.ir(nav)} style={{ width: '20%', alignItems: 'center', gap: 4 }}>
-            <View style={{ width: 56, height: 56, borderRadius: 18, backgroundColor: c.violetMist, borderWidth: 2, borderColor: c.violetSoft, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable key={a.nome} onPress={() => a.ir(nav)} accessibilityRole="button" accessibilityLabel={a.nome} style={{ width: '20%', alignItems: 'center', gap: 4, minHeight: 76 }}>
+            <View accessible={false} style={{ width: 56, height: 56, borderRadius: 18, backgroundColor: c.violetMist, borderWidth: 2, borderColor: c.violetSoft, alignItems: 'center', justifyContent: 'center' }}>
               <Icone name={a.icone} size={28} color={c.violet} />
             </View>
-            <Text numberOfLines={1} adjustsFontSizeToFit style={{ fontFamily: f.extra, fontSize: 11, color: c.slate }}>{a.nome}</Text>
+            <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 11, color: c.slate, textAlign: 'center' }}>{a.nome}</Text>
           </Pressable>
         ))}
       </View>
@@ -201,7 +201,7 @@ function Aula() {
 
   if (!aberta || !sl.opcoes) {
     return (
-      <Card center style={[destaque, { paddingVertical: 32 }]}>
+      <Card center style={[destaque(), { paddingVertical: 32 }]}>
         <Anim nome="escrevendo" size={180} />
         <H>Aguardando o professor</H>
         <T muted style={{ textAlign: 'center' }}>A pergunta aparece aqui assim que for liberada.</T>
@@ -247,7 +247,7 @@ function Quiz({ at }) {
 
   if (!q) {
     return (
-      <Card center style={[destaque, { paddingVertical: 24 }]}>
+      <Card center style={[destaque(), { paddingVertical: 24 }]}>
         <Anim nome="feliz" size={170} />
         <H>Atividade concluída!</H>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -403,15 +403,15 @@ function ChatIA({ contexto }) {
       {digitando && <Balao de="ia" txt="digitando..." />}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {iaRespostas.map((x) => (
-          <Pressable key={x.p} onPress={() => perguntar(x.p)} style={{ borderWidth: 2, borderColor: c.violetSoft, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6 }}>
-            <Text style={{ fontFamily: f.negrito, fontSize: 13, color: c.violet }}>{x.p}</Text>
+          <Pressable key={x.p} onPress={() => perguntar(x.p)} accessibilityRole="button" style={{ borderWidth: 2, borderColor: c.violetSoft, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6, minHeight: 44, justifyContent: 'center' }}>
+            <Text allowFontScaling style={{ fontFamily: f.negrito, fontSize: 13, color: c.violet }}>{x.p}</Text>
           </Pressable>
         ))}
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <Campo style={{ flex: 1 }} value={txt} onChangeText={setTxt} placeholder="Escreva sua dúvida" onSubmitEditing={() => perguntar(txt)} />
-        <Pressable onPress={() => perguntar(txt)} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: txt.trim() ? c.violet : c.line, alignItems: 'center', justifyContent: 'center' }}>
-          <Icone name="send" size={22} color={c.snow} />
+        <Campo label="Dúvida para o Sabiá" style={{ flex: 1 }} value={txt} onChangeText={setTxt} placeholder="Escreva sua dúvida" onSubmitEditing={() => perguntar(txt)} />
+        <Pressable onPress={() => perguntar(txt)} disabled={!txt.trim() || digitando} accessibilityRole="button" accessibilityLabel="Enviar dúvida" accessibilityState={{ disabled: !txt.trim() || digitando }} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: txt.trim() ? c.violet : c.line, alignItems: 'center', justifyContent: 'center' }}>
+          <Icone accessible={false} name="send" size={22} color={c.snow} />
         </Pressable>
       </View>
     </Card>
@@ -427,7 +427,7 @@ function Avisos() {
       {avisos.map((a) => {
         const lido = s.lidos.includes(a.id);
         return (
-          <Pressable key={a.id} onPress={() => nav.abrir(AvisoDetalhe, { a })}>
+          <Pressable key={a.id} onPress={() => nav.abrir(AvisoDetalhe, { a })} accessibilityRole="button" accessibilityLabel={`${a.titulo}. ${a.quando}`}>
             <Card style={{ gap: 4, borderLeftWidth: 6, borderLeftColor: lido ? c.line : c.violet }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Rotulo icone={a.icone}>{a.tipo}</Rotulo>
@@ -459,10 +459,11 @@ function AvisoDetalhe({ a }) {
 
 // a paleta do desenho é conteúdo do aluno, por isso é a única parte colorida
 const tintas = [c.violet, c.coral, c.amber, c.mint, c.sky, c.ink];
+const nomesTintas = ['violeta', 'coral', 'amarela', 'verde', 'azul', 'preta'];
 
 function Rabisco({ pontos, dot }) {
   return (
-    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
+    <View accessible={false} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
       {pontos.map((p, i) => (
         <View
           key={i}
@@ -477,6 +478,7 @@ function Rabisco({ pontos, dot }) {
 function Desenho({ onEnviar, onCancelar }) {
   const [pontos, setPontos] = useState([]);
   const [tinta, setTinta] = useState(tintas[0]);
+  const [descricao, setDescricao] = useState('');
   const lado = useRef(1);
   const ultimo = useRef(null);
 
@@ -497,6 +499,8 @@ function Desenho({ onEnviar, onCancelar }) {
       <Rotulo icone="palette">DESAFIO DO DIA</Rotulo>
       <H small>Desenhe algo que te faz feliz</H>
       <View
+        accessible={false}
+        importantForAccessibility="no"
         onLayout={(e) => (lado.current = e.nativeEvent.layout.width)}
         onStartShouldSetResponder={() => true}
         onMoveShouldSetResponder={() => true}
@@ -514,14 +518,15 @@ function Desenho({ onEnviar, onCancelar }) {
         <Rabisco pontos={pontos} dot={10} />
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-        {tintas.map((t) => (
-          <Pressable key={t} onPress={() => setTinta(t)} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: t, borderWidth: 3, borderColor: tinta === t ? c.violetSoft : c.snow }} />
+        {tintas.map((t, i) => (
+          <Pressable key={t} onPress={() => setTinta(t)} accessibilityRole="radio" accessibilityLabel={`Cor ${nomesTintas[i]}`} accessibilityState={{ checked: tinta === t }} style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: t, borderWidth: 4, borderColor: tinta === t ? c.violetSoft : c.snow }} />
         ))}
-        <Pressable onPress={() => setPontos([])} hitSlop={8} style={{ marginLeft: 'auto' }}>
-          <Icone name="eraser" size={28} color={c.slate} />
+        <Pressable onPress={() => setPontos([])} accessibilityRole="button" accessibilityLabel="Apagar desenho" hitSlop={8} style={{ marginLeft: 'auto', width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
+          <Icone accessible={false} name="eraser" size={28} color={c.slate} />
         </Pressable>
       </View>
-      <Btn title="Enviar para o mural" icone="send" disabled={!pontos.length} onPress={() => onEnviar(pontos)} />
+      <Campo label="Descrição alternativa do desenho" value={descricao} onChangeText={setDescricao} placeholder="Ou descreva o que você desenharia" />
+      <Btn title="Enviar para o mural" icone="send" disabled={!pontos.length && !descricao.trim()} onPress={() => onEnviar(pontos.length ? pontos : { descricao: descricao.trim() })} />
       <Btn title="Cancelar" color={c.slate} onPress={onCancelar} />
     </Card>
   );
@@ -532,7 +537,7 @@ function Mural() {
   const s = useStore();
   const [curtidos, setCurtidos] = useState([]);
   const curtir = (id) => setCurtidos((l) => (l.includes(id) ? l.filter((x) => x !== id) : [...l, id]));
-  const quadros = [...(s.desenho ? [{ autor: 'Você', turma: ALUNO.turma, titulo: 'Meu desenho', curtidas: 0, pontos: s.desenho }] : []), ...desenhos];
+  const quadros = [...(s.desenho ? [{ autor: 'Você', turma: ALUNO.turma, titulo: 'Meu desenho', curtidas: 0, ...(Array.isArray(s.desenho) ? { pontos: s.desenho } : s.desenho) }] : []), ...desenhos];
   return (
     <>
       <Rotulo icone="image-multiple">MURAL DE DESENHOS</Rotulo>
@@ -542,15 +547,15 @@ function Mural() {
           return (
             <View key={d.autor} style={{ width: '48%', gap: 4 }}>
               <View style={{ aspectRatio: 1, borderRadius: 12, borderWidth: 2, borderColor: c.line, backgroundColor: c.snow, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                {d.pontos ? <Rabisco pontos={d.pontos} dot={5} /> : <Text style={{ fontSize: 64, lineHeight: 84 }}>{d.emoji}</Text>}
+                {d.pontos ? <Rabisco pontos={d.pontos} dot={5} /> : d.descricao ? <T style={{ padding: 12, textAlign: 'center' }}>{d.descricao}</T> : <Text allowFontScaling style={{ fontSize: 64, lineHeight: 84 }}>{d.emoji}</Text>}
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <View style={{ flex: 1 }}>
                   <T style={{ fontWeight: '800', fontSize: 13, lineHeight: 18 }}>{d.titulo}</T>
                   <T muted style={{ fontSize: 12, lineHeight: 16 }}>{d.autor} · {d.turma}</T>
                 </View>
-                <Pressable onPress={() => curtir(d.autor)} hitSlop={8} style={{ alignItems: 'center' }}>
-                  <Icone name={curtido ? 'heart' : 'heart-outline'} size={22} color={c.violet} />
+                <Pressable onPress={() => curtir(d.autor)} accessibilityRole="button" accessibilityLabel={`${curtido ? 'Remover curtida de' : 'Curtir'} desenho de ${d.autor}`} accessibilityState={{ checked: curtido }} hitSlop={8} style={{ alignItems: 'center', minWidth: 44, minHeight: 44 }}>
+                  <Icone accessible={false} name={curtido ? 'heart' : 'heart-outline'} size={22} color={c.violet} />
                   <T muted style={{ fontSize: 11, lineHeight: 14 }}>{d.curtidas + (curtido ? 1 : 0)}</T>
                 </Pressable>
               </View>
@@ -578,7 +583,7 @@ function Desafio() {
   }
   return (
     <>
-      <Card center style={[destaque, { paddingVertical: 20 }]}>
+      <Card center style={[destaque(), { paddingVertical: 20 }]}>
         <Rotulo icone="palette">DESAFIO DO DIA</Rotulo>
         <H style={{ textAlign: 'center' }}>"Desenhe algo que te faz feliz."</H>
         <T muted>{12 + (s.desenho ? 1 : 0)} alunos já participaram · +30 XP</T>
@@ -597,7 +602,7 @@ function Encontro({ m, detalhe }) {
   const indo = s.comunidades.includes(m.id);
   const e = m.encontro;
   return (
-    <Pressable disabled={detalhe} onPress={() => nav.abrir(ComunidadeDetalhe, { m })}>
+    <Pressable accessible={false} disabled={detalhe} onPress={() => nav.abrir(ComunidadeDetalhe, { m })}>
       <Card style={{ borderColor: c.violetSoft, borderBottomWidth: 6, gap: 6 }}>
         <Rotulo icone={m.icone}>ENCONTRO PRESENCIAL · {m.nome.toUpperCase()}</Rotulo>
         <H>{e.titulo}</H>
@@ -626,7 +631,7 @@ function ComunidadeDetalhe({ m }) {
   const s = useStore();
   return (
     <>
-      <Card center style={destaque}>
+      <Card center style={destaque()}>
         <View style={{ width: 80, height: 80, borderRadius: 24, backgroundColor: c.snow, alignItems: 'center', justifyContent: 'center' }}>
           <Icone name={m.icone} size={48} color={c.violet} />
         </View>
@@ -722,15 +727,15 @@ function Personalizar() {
   const [cat, setCat] = useState(categorias[0]);
   return (
     <>
-      <Card center style={destaque}>
+      <Card center style={destaque()}>
         <Sabia size={230} equip={s.equip} anim="idle2" />
         <T muted>Nível {s.nivel.n} · toque em um item para vestir</T>
       </Card>
 
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {categorias.map((k) => (
-          <Pressable key={k} onPress={() => setCat(k)} style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, borderWidth: 2, borderColor: cat === k ? c.violet : c.line, backgroundColor: cat === k ? c.violet : c.snow }}>
-            <Text style={{ fontFamily: f.extra, fontSize: 12, color: cat === k ? c.snow : c.slate }}>{k}</Text>
+          <Pressable key={k} onPress={() => setCat(k)} accessibilityRole="tab" accessibilityLabel={k} accessibilityState={{ selected: cat === k }} style={{ paddingHorizontal: 14, paddingVertical: 8, minHeight: 44, justifyContent: 'center', borderRadius: 16, borderWidth: 2, borderColor: cat === k ? c.violet : c.line, backgroundColor: cat === k ? c.violet : c.snow }}>
+            <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 12, color: cat === k ? c.snow : c.slate }}>{k}</Text>
           </Pressable>
         ))}
       </View>
@@ -747,6 +752,9 @@ function Personalizar() {
                 key={it.id}
                 disabled={!livre}
                 onPress={() => s.vestir(it)}
+                accessibilityRole="button"
+                accessibilityLabel={`${it.nome}, ${usando ? 'usando' : livre ? 'disponível' : `bloqueado até o nível ${it.nivel}`}`}
+                accessibilityState={{ disabled: !livre, selected: usando }}
                 style={{ width: '48%', alignItems: 'center', gap: 4, padding: 12, borderRadius: 16, borderWidth: 2, borderColor: usando ? c.violet : c.line, backgroundColor: usando ? c.violetMist : c.snow, opacity: livre ? 1 : 0.6 }}
               >
                 <Icone name={it.icone} size={44} color={livre ? it.cor : c.hare} />
@@ -760,7 +768,7 @@ function Personalizar() {
           })}
       </View>
 
-      <Card style={[destaque, { flexDirection: 'row', alignItems: 'center', gap: 12 }]}>
+      <Card style={[destaque(), { flexDirection: 'row', alignItems: 'center', gap: 12 }]}>
         <Anim nome="cores" size={90} />
         <View style={{ flex: 1 }}>
           <Rotulo icone="lock">NÍVEL 12</Rotulo>
@@ -778,7 +786,7 @@ function Perfil() {
   const { n, min, prox } = s.nivel;
   return (
     <>
-      <Card center style={destaque}>
+      <Card center style={destaque()}>
         <Sabia size={200} equip={s.equip} anim="idle2" />
         <H>{ALUNO.nome}</H>
         <T muted>{ALUNO.turma} · Sabiá nível {n} · {s.xp} XP</T>
@@ -813,14 +821,29 @@ function Perfil() {
 }
 
 function Respiracao({ onFim }) {
+  const s = useStore();
   const fases = ['Inspire', 'Segure', 'Expire', 'Segure'];
   const [fase, setFase] = useState(0);
+  const [reducaoSistema, setReducaoSistema] = useState(false);
   const escala = useRef(new Animated.Value(0.5)).current;
+  const reduzirMovimento = s.modoConforto || reducaoSistema;
   useEffect(() => {
-    Animated.timing(escala, { toValue: [1, 1, 0.5, 0.5][fase], duration: 4000, useNativeDriver: true }).start();
+    AccessibilityInfo.isReduceMotionEnabled().then(setReducaoSistema);
+    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReducaoSistema);
+    return () => sub.remove();
+  }, []);
+  useEffect(() => {
     const t = setTimeout(() => setFase((fase + 1) % 4), 4000);
     return () => clearTimeout(t);
   }, [fase]);
+  useEffect(() => {
+    if (reduzirMovimento) {
+      escala.setValue(1);
+      return undefined;
+    }
+    Animated.timing(escala, { toValue: [1, 1, 0.5, 0.5][fase], duration: 4000, useNativeDriver: true }).start();
+    return undefined;
+  }, [fase, reduzirMovimento]);
   return (
     <Card center style={{ paddingVertical: 24, gap: 20 }}>
       <H>Respiração quadrada</H>
@@ -828,7 +851,7 @@ function Respiracao({ onFim }) {
         <Animated.View style={{ position: 'absolute', width: 220, height: 220, borderRadius: 110, backgroundColor: c.violetSoft, transform: [{ scale: escala }] }} />
         <Text style={{ fontSize: 28, fontFamily: f.titulo, color: c.violetDeep }}>{fases[fase]}</Text>
       </View>
-      <T muted style={{ textAlign: 'center' }}>4 segundos em cada fase. Repita algumas vezes.</T>
+      <T muted style={{ textAlign: 'center' }}>{reduzirMovimento ? 'Siga seu próprio ritmo.' : '4 segundos em cada fase. Repita algumas vezes.'}</T>
       <Btn title="Terminar" onPress={onFim} />
     </Card>
   );
@@ -859,7 +882,7 @@ function Ficha({ titulo, perguntas, onFim }) {
       {perguntas.map(([p, ex]) => (
         <View key={p} style={{ gap: 8 }}>
           <T style={{ fontWeight: '700' }}>{p}</T>
-          <Campo multiline placeholder={ex} />
+          <Campo label={p} multiline placeholder={ex} />
         </View>
       ))}
       <Btn title="Guardar" onPress={onFim} />
@@ -885,7 +908,7 @@ function Emocoes({ onFim }) {
       <T muted>Escreva o que você fez ou o que aconteceu e marque o que sentiu. Pode marcar mais de uma.</T>
       {linhas.map((l, k) => (
         <View key={k} style={{ gap: 8, paddingTop: k ? 12 : 0, borderTopWidth: k ? 2 : 0, borderColor: c.line }}>
-          <Campo value={l.txt} onChangeText={(txt) => mudar(k, { txt })} placeholder="Ex.: apresentei um trabalho na frente da turma" />
+          <Campo label="O que aconteceu ou o que você fez?" value={l.txt} onChangeText={(txt) => mudar(k, { txt })} placeholder="Ex.: apresentei um trabalho na frente da turma" />
           <View style={{ flexDirection: 'row', gap: 6 }}>
             {emocoes.map((e) => {
               const on = l.em.includes(e.nome);
@@ -893,11 +916,13 @@ function Emocoes({ onFim }) {
                 <Pressable
                   key={e.nome}
                   onPress={() => marcar(k, e.nome)}
-                  accessibilityState={{ selected: on }}
+                  accessibilityRole="checkbox"
+                  accessibilityLabel={e.nome}
+                  accessibilityState={{ checked: on }}
                   style={{ flex: 1, alignItems: 'center', paddingVertical: 6, borderRadius: 12, borderWidth: 2, borderColor: on ? c.violet : c.line, backgroundColor: on ? c.violetMist : c.snow }}
                 >
-                  <Icone name={e.icone} size={28} color={on ? c.violet : c.slate} />
-                  <Text numberOfLines={1} adjustsFontSizeToFit style={{ fontFamily: f.extra, fontSize: 11, color: on ? c.violet : c.slate }}>{e.nome}</Text>
+                  <Icone accessible={false} name={e.icone} size={28} color={on ? c.violet : c.slate} />
+                  <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 11, color: on ? c.violet : c.slate }}>{e.nome}</Text>
                 </Pressable>
               );
             })}
@@ -921,7 +946,7 @@ function Pratica({ id }) {
   };
   if (ok) {
     return (
-      <Card center style={[destaque, { paddingVertical: 24 }]}>
+      <Card center style={[destaque(), { paddingVertical: 24 }]}>
         <Anim nome="feliz" size={160} />
         <H>Prática concluída</H>
         <T muted style={{ textAlign: 'center' }}>Cuidar de como você se sente também é aprender.</T>
@@ -941,7 +966,7 @@ function CanalAnonimo({ onFim }) {
     <Card>
       <H>Canal anônimo</H>
       <T muted>Escreva o que estiver sentindo. Sua mensagem não é associada ao seu nome.</T>
-      <Campo multiline value={txt} onChangeText={setTxt} placeholder="Como você está?" />
+      <Campo label="Como você está?" multiline value={txt} onChangeText={setTxt} placeholder="Como você está?" />
       <Btn title="Enviar anonimamente" disabled={!txt.trim()} onPress={() => { s.enviarAnonimo(txt.trim()); setTxt(''); }} />
       {s.mensagens.map((m, i) => (
         <View key={i} style={{ backgroundColor: c.violetMist, borderRadius: 12, padding: 12, gap: 4 }}>
@@ -972,7 +997,7 @@ function BemEstar() {
         <T muted>Atividades rápidas para entender e cuidar do que você sente.</T>
       </View>
 
-      <Card style={[destaque, { gap: 12 }]}>
+      <Card style={[destaque(), { gap: 12 }]}>
         <Rotulo icone="brain">COMO VOCÊ ESTÁ HOJE?</Rotulo>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {humoresAluno.map((h) => {
@@ -981,9 +1006,12 @@ function BemEstar() {
               <Pressable
                 key={h.nome}
                 onPress={() => s.registrarHumor(h.i)}
-                style={{ flex: 1, alignItems: 'center', gap: 2, paddingVertical: 10, borderRadius: 12, borderWidth: 2, borderColor: ativo ? c.violet : 'transparent', backgroundColor: ativo ? c.snow : 'transparent' }}
+                accessibilityRole="radio"
+                accessibilityLabel={h.nome}
+                accessibilityState={{ checked: ativo }}
+                style={{ flex: 1, alignItems: 'center', gap: 2, paddingVertical: 10, minHeight: 72, borderRadius: 12, borderWidth: 2, borderColor: ativo ? c.violet : 'transparent', backgroundColor: ativo ? c.snow : 'transparent' }}
               >
-                <Icone name={h.icone} size={40} color={ativo ? c.violet : c.slate} />
+                <Icone accessible={false} name={h.icone} size={40} color={ativo ? c.violet : c.slate} />
                 <T style={{ fontWeight: '700', fontSize: 13, textAlign: 'center' }}>{h.nome}</T>
               </Pressable>
             );
@@ -1038,14 +1066,15 @@ function Toast() {
   const k = s.toast?.k;
   useEffect(() => {
     if (!k) return;
+    AccessibilityInfo.announceForAccessibility(`Mais ${s.toast.n} pontos de experiência. ${s.toast.msg}`);
     const t = setTimeout(s.fecharToast, 2500);
     return () => clearTimeout(t);
   }, [k]);
   if (!s.toast) return null;
   return (
-    <View style={{ position: 'absolute', left: 16, right: 16, bottom: 90, flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, borderRadius: 16, backgroundColor: c.violetDeep, pointerEvents: 'none' }}>
-      <Icone name="star-four-points" size={24} color={c.violetSoft} />
-      <Text style={{ fontFamily: f.tituloExtra, fontSize: 24, lineHeight: 30, color: c.snow }}>+{s.toast.n} XP</Text>
+    <View accessible accessibilityRole="alert" accessibilityLiveRegion="polite" pointerEvents="none" style={{ position: 'absolute', left: 16, right: 16, bottom: 90, flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, borderRadius: 16, backgroundColor: c.violetDeep }}>
+      <Icone accessible={false} name="star-four-points" size={24} color={c.violetSoft} />
+      <Text allowFontScaling style={{ fontFamily: f.tituloExtra, fontSize: 24, lineHeight: 30, color: c.snow }}>+{s.toast.n} XP</Text>
       <T style={{ flex: 1, fontSize: 14, color: c.violetMist }}>{s.toast.msg}</T>
     </View>
   );
@@ -1053,12 +1082,15 @@ function Toast() {
 
 function Recompensa() {
   const s = useStore();
+  useEffect(() => {
+    if (s.recompensa) AccessibilityInfo.announceForAccessibility(`Novo nível. Sabiá nível ${s.recompensa}.`);
+  }, [s.recompensa]);
   if (!s.recompensa) return null;
   const novos = itens.filter((it) => it.nivel === s.recompensa);
   return (
-    <Modal transparent animationType="fade" visible onRequestClose={s.fecharRecompensa}>
-      <View style={{ flex: 1, justifyContent: 'center', padding: 24, backgroundColor: 'rgba(3,0,33,0.6)' }}>
-        <Card center style={[destaque, { width: '100%', maxWidth: 400, alignSelf: 'center', gap: 10 }]}>
+    <Modal transparent animationType={s.modoConforto ? 'none' : 'fade'} visible onRequestClose={s.fecharRecompensa}>
+      <View accessibilityViewIsModal style={{ flex: 1, justifyContent: 'center', padding: 24, backgroundColor: 'rgba(3,0,33,0.6)' }}>
+        <Card center style={[destaque(), { width: '100%', maxWidth: 400, alignSelf: 'center', gap: 10 }]}>
           <Rotulo icone="party-popper">NOVO NÍVEL!</Rotulo>
           <Anim nome="cosmeticos" size={170} />
           <H>Sabiá — Nível {s.recompensa}</H>

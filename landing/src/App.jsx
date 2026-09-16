@@ -260,6 +260,9 @@ export default function App() {
 
   return (
     <>
+      <a href="#proposta" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-violet-deep">
+        Pular para o conteúdo principal
+      </a>
       {/* Hero */}
       <header id="topo" className="relative overflow-hidden px-6 pt-8 pb-16 sm:pt-16 sm:pb-20">
         <Nuvens />
