@@ -6,6 +6,18 @@ Adicionar ao SABIAA um canal seguro e acessível para que estudantes possam comu
 
 A funcionalidade será **totalmente mockada**, servindo para demonstrar a experiência de uso e o fluxo de acompanhamento pela escola, sem necessidade de implementar um sistema real de denúncias, notificações ou encaminhamentos.
 
+> **Revisão após a primeira implementação.** O que está escrito abaixo vale, com
+> duas mudanças:
+>
+> 1. **§1 — a entrada saiu da Home.** Um cartão "Preciso de ajuda?" na Home expõe
+>    quem abre o app perto de outras pessoas. A entrada virou uma linha sóbria no
+>    **Bem-estar** ("Falar com a escola"), ao lado do canal anônimo: de fora não
+>    se lê nada sobre relato; dentro da tela, tudo é explícito.
+> 2. **§2 — cada tipo tem o seu formulário.** Em vez de um questionário genérico
+>    para todos, **Bullying** e **Assédio** têm perguntas, texto de acolhimento e
+>    ícone próprios (`tipoRelato`, em `mock.js`). A terceira opção "outra
+>    situação" saiu: o canal anônimo, na mesma tela, já cobre isso.
+
 ---
 
 ## 1. Acesso do aluno

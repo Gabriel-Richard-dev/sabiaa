@@ -3,13 +3,12 @@
 import { useEffect, useState } from 'react';
 import { AccessibilityInfo, Pressable, View } from 'react-native';
 import { Btn, c, Campo, Card, Escolha, H, Icone, Rotulo, Selo, Stat, T, useNav, useStore } from './ui';
-import { combinaFiltro, envolvidosRelato, locaisRelato, quandosRelato, relatosBase, statusRelato, tiposRelato } from './mock';
+import { combinaFiltro, relatosBase, statusRelato, tipoRelato, tiposRelato } from './mock';
 
 const AVISO = 'Compartilhe apenas as informações necessárias. Seu relato será encaminhado à equipe responsável pela escola.';
 const IDENTIFICAR = 'Sim, quero me identificar';
 const ANONIMO = 'Prefiro fazer este relato anonimamente';
-const BOTAO = { Bullying: 'Sofri bullying', Assédio: 'Sofri assédio', 'Outra situação': 'Quero contar outra situação' };
-const FILTROS = ['Todos', ...tiposRelato.slice(0, 2), 'Outros', ...Object.values(statusRelato).map((x) => x.filtro)];
+const FILTROS = ['Todos', ...tiposRelato, ...Object.values(statusRelato).map((x) => x.filtro)];
 
 function SeloStatus({ status }) {
   return <Selo texto={status} cor={statusRelato[status].cor} />;
@@ -18,37 +17,16 @@ function SeloStatus({ status }) {
 function Dado({ rotulo, children }) {
   return (
     <View style={{ flexDirection: 'row', gap: 8 }}>
-      <T muted style={{ width: 110, fontSize: 13 }}>{rotulo}</T>
-      <T style={{ flex: 1, fontWeight: '700', fontSize: 14 }}>{children || 'Não informado'}</T>
+      <T muted style={{ flex: 1, fontSize: 13 }}>{rotulo}</T>
+      <T style={{ flex: 1, fontWeight: '700', fontSize: 14 }}>{children || 'Não respondeu'}</T>
     </View>
   );
 }
 
 // ---------------------------------------------------------------- aluno
 
-/** Porta de entrada na Home: fácil de achar, sóbria o bastante para não expor quem abre. */
-export function AjudaHome() {
-  const nav = useNav();
-  return (
-    <Pressable
-      onPress={() => nav.abrir(Central)}
-      accessibilityRole="button"
-      accessibilityLabel="Preciso de ajuda?"
-      accessibilityHint="Abre a Central de Proteção e Apoio"
-    >
-      <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        <Icone name="hand-heart-outline" size={28} color={c.violet} />
-        <View style={{ flex: 1 }}>
-          <T style={{ fontWeight: '800' }}>Preciso de ajuda?</T>
-          <T muted style={{ fontSize: 13 }}>Se algo aconteceu com você ou com alguém que você conhece, estamos aqui para ouvir.</T>
-        </View>
-        <Icone name="chevron-right" size={24} color={c.hare} />
-      </Card>
-    </Pressable>
-  );
-}
-
-function Central() {
+/** Aberta por uma linha sóbria no Bem-estar: quem olha de fora não vê nada sobre relato. */
+export function Central() {
   const nav = useNav();
   const s = useStore();
   const meus = s.relatos.filter((r) => r.meu);
@@ -62,7 +40,14 @@ function Central() {
       <Card style={{ gap: 10 }}>
         <Rotulo icone="hand-heart-outline">CONTAR O QUE ACONTECEU</Rotulo>
         {tiposRelato.map((t) => (
-          <Btn key={t} title={BOTAO[t]} onPress={() => nav.abrir(Relato, { tipo: t })} style={{ alignSelf: 'stretch' }} />
+          <Btn
+            key={t}
+            title={tipoRelato[t].botao}
+            icone={tipoRelato[t].icone}
+            accessibilityLabel={`${tipoRelato[t].botao}. Abre o relato de ${t.toLowerCase()}`}
+            onPress={() => nav.abrir(Relato, { tipo: t })}
+            style={{ alignSelf: 'stretch' }}
+          />
         ))}
         <T muted style={{ fontSize: 12 }}>{AVISO}</T>
       </Card>
@@ -90,9 +75,11 @@ function Central() {
 
 function Relato({ tipo }) {
   const s = useStore();
-  const [f, setF] = useState({ texto: '', quando: null, local: null, envolvidos: null, extra: '', identificacao: null, anexo: null });
+  const { icone, acolhimento, perguntas } = tipoRelato[tipo];
+  const [f, setF] = useState({ texto: '', extra: '', identificacao: null, anexo: null, respostas: {} });
   const [enviado, setEnviado] = useState(null);
   const set = (k) => (v) => setF((x) => ({ ...x, [k]: v }));
+  const responder = (label) => (v) => setF((x) => ({ ...x, respostas: { ...x.respostas, [label]: v } }));
   const pronto = f.texto.trim() && f.identificacao;
 
   if (enviado) return <Confirmacao relato={enviado} />;
@@ -100,8 +87,9 @@ function Relato({ tipo }) {
   return (
     <>
       <View>
-        <Rotulo icone="hand-heart-outline">TIPO DE SITUAÇÃO</Rotulo>
+        <Rotulo icone={icone}>TIPO DE SITUAÇÃO</Rotulo>
         <H>{tipo}</H>
+        <T muted>{acolhimento}</T>
       </View>
 
       <Card style={{ gap: 14 }}>
@@ -116,9 +104,9 @@ function Relato({ tipo }) {
           />
         </View>
 
-        <Escolha label="Quando aconteceu?" opcoes={quandosRelato} valor={f.quando} onChange={set('quando')} />
-        <Escolha label="Onde aconteceu?" opcoes={locaisRelato} valor={f.local} onChange={set('local')} />
-        <Escolha label="Você conhece as pessoas envolvidas?" opcoes={envolvidosRelato} valor={f.envolvidos} onChange={set('envolvidos')} />
+        {perguntas.map((q) => (
+          <Escolha key={q.label} label={q.label} opcoes={q.opcoes} valor={f.respostas[q.label]} onChange={responder(q.label)} />
+        ))}
 
         <View style={{ gap: 8 }}>
           <T style={{ fontWeight: '700' }}>Quer adicionar mais alguma informação?</T>
@@ -155,9 +143,7 @@ function Relato({ tipo }) {
               s.enviarRelato({
                 tipo,
                 texto: f.texto.trim(),
-                quando: f.quando,
-                local: f.local,
-                envolvidos: f.envolvidos,
+                respostas: f.respostas,
                 extra: f.extra.trim(),
                 anexo: f.anexo,
                 anonimo: f.identificacao === ANONIMO,
@@ -233,7 +219,7 @@ export function CentralGestao() {
                 <T muted style={{ fontSize: 13 }}>{r.data}</T>
                 <Icone accessible={false} name="chevron-right" size={22} color={c.hare} />
               </View>
-              <T muted style={{ fontSize: 13 }}>#{r.protocolo} · {r.anonimo ? 'Anônimo' : 'Identificado'} · {r.local || 'Local não informado'}</T>
+              <T muted style={{ fontSize: 13 }}>#{r.protocolo} · {r.anonimo ? 'Anônimo' : 'Identificado'}</T>
               <SeloStatus status={r.status} />
             </Card>
           </Pressable>
@@ -265,18 +251,22 @@ function Caso({ protocolo }) {
   return (
     <>
       <View>
-        <Rotulo icone="shield-account-outline">RELATO #{r.protocolo}</Rotulo>
+        <Rotulo icone={tipoRelato[r.tipo].icone}>RELATO #{r.protocolo}</Rotulo>
         <H>{r.tipo}</H>
         <SeloStatus status={r.status} />
       </View>
 
       <Card style={{ gap: 6 }}>
         <Dado rotulo="Data">{r.data}</Dado>
-        <Dado rotulo="Quando">{r.quando}</Dado>
-        <Dado rotulo="Local">{r.local}</Dado>
         <Dado rotulo="Identificação">{r.anonimo ? 'Anônimo' : 'Identificado'}</Dado>
-        <Dado rotulo="Envolvidos">{r.envolvidos}</Dado>
         <Dado rotulo="Anexo">{r.anexo || 'Nenhum'}</Dado>
+      </Card>
+
+      <Card style={{ gap: 6 }}>
+        <Rotulo icone="comment-question-outline">RESPOSTAS</Rotulo>
+        {tipoRelato[r.tipo].perguntas.map((q) => (
+          <Dado key={q.label} rotulo={q.label}>{r.respostas[q.label]}</Dado>
+        ))}
       </Card>
 
       <Card style={{ gap: 6 }}>

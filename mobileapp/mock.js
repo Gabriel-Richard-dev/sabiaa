@@ -203,10 +203,35 @@ export const humores = [
 export const humoresBase = [6, 14, 31, 42, 27]; // contagem agregada fictícia da escola
 
 // Central de Proteção e Apoio (specs/bullyng-spec.md). Fluxo mockado: nenhum dado real.
-export const tiposRelato = ['Bullying', 'Assédio', 'Outra situação'];
-export const locaisRelato = ['Sala', 'Pátio', 'Banheiro', 'Internet', 'Outro'];
-export const quandosRelato = ['Hoje', 'Ontem', 'Esta semana', 'Antes disso'];
-export const envolvidosRelato = ['Sim', 'Não', 'Prefiro não responder'];
+// Bullying e assédio não se perguntam do mesmo jeito: cada tipo traz as suas
+// perguntas, o seu texto de acolhimento e o seu botão. Tudo que é próprio de um
+// tipo mora aqui, então acrescentar um terceiro é mexer só neste mapa.
+export const tipoRelato = {
+  Bullying: {
+    icone: 'account-group-outline',
+    botao: 'Estão fazendo bullying comigo',
+    acolhimento: 'Bullying costuma se repetir, e a culpa nunca é de quem sofre. Responda só o que quiser — nada aqui é obrigatório.',
+    perguntas: [
+      { label: 'Está acontecendo há quanto tempo?', opcoes: ['Foi a primeira vez', 'Algumas semanas', 'Meses ou mais'] },
+      { label: 'Acontece mais onde?', opcoes: ['Sala', 'Pátio', 'Banheiro', 'Internet', 'No trajeto'] },
+      { label: 'O que mais acontece?', opcoes: ['Apelidos', 'Exclusão', 'Ameaça', 'Agressão física'] },
+      { label: 'Outras pessoas veem acontecer?', opcoes: ['Sim', 'Não', 'Não sei'] },
+    ],
+  },
+  Assédio: {
+    icone: 'shield-alert-outline',
+    botao: 'Sofri assédio',
+    acolhimento: 'Você não precisa ter certeza do nome do que aconteceu para pedir ajuda. Responda só o que quiser — nada aqui é obrigatório.',
+    perguntas: [
+      { label: 'A pessoa envolvida é...', opcoes: ['Um colega', 'Um adulto da escola', 'Alguém de fora'] },
+      { label: 'Como aconteceu?', opcoes: ['Presencial', 'Mensagem', 'Foto ou vídeo'] },
+      { label: 'Aconteceu mais de uma vez?', opcoes: ['Sim', 'Não', 'Prefiro não responder'] },
+      { label: 'Você se sente em segurança na escola hoje?', opcoes: ['Sim', 'Não', 'Não sei'] },
+      { label: 'Quer falar com alguém hoje?', opcoes: ['Sim, hoje', 'Sim, mas sem pressa', 'Agora não'] },
+    ],
+  },
+};
+export const tiposRelato = Object.keys(tipoRelato);
 
 // nome da cor em `c` (ui.js); resolvido na hora de renderizar para acompanhar o Modo Conforto
 export const statusRelato = {
@@ -226,8 +251,14 @@ export function hojeBR() {
 
 export const relatosIniciais = [
   {
-    protocolo: 'SB-2026-0148', tipo: 'Bullying', data: '17/09/2026', quando: 'Esta semana', local: 'Pátio',
-    envolvidos: 'Sim', extra: 'Acontece quase todo dia no intervalo.', anonimo: false, anexo: null, meu: true,
+    protocolo: 'SB-2026-0148', tipo: 'Bullying', data: '17/09/2026', anonimo: false, anexo: null, meu: true,
+    extra: 'Acontece quase todo dia no intervalo.',
+    respostas: {
+      'Está acontecendo há quanto tempo?': 'Algumas semanas',
+      'Acontece mais onde?': 'Pátio',
+      'O que mais acontece?': 'Apelidos',
+      'Outras pessoas veem acontecer?': 'Sim',
+    },
     status: 'Em análise',
     texto: 'Alguns alunos estão fazendo comentários sobre mim durante o intervalo.',
     historico: [
@@ -236,8 +267,15 @@ export const relatosIniciais = [
     ],
   },
   {
-    protocolo: 'SB-2026-0147', tipo: 'Assédio', data: '16/09/2026', quando: 'Antes disso', local: 'Outro',
-    envolvidos: 'Prefiro não responder', extra: '', anonimo: true, anexo: null, meu: false,
+    protocolo: 'SB-2026-0147', tipo: 'Assédio', data: '16/09/2026', anonimo: true, anexo: null, meu: false,
+    extra: '',
+    respostas: {
+      'A pessoa envolvida é...': 'Um adulto da escola',
+      'Como aconteceu?': 'Presencial',
+      'Aconteceu mais de uma vez?': 'Prefiro não responder',
+      'Você se sente em segurança na escola hoje?': 'Não sei',
+      'Quer falar com alguém hoje?': 'Sim, mas sem pressa',
+    },
     status: 'Em acompanhamento',
     texto: 'Gostaria de conversar com alguém sobre uma situação que aconteceu na escola.',
     historico: [
@@ -247,8 +285,14 @@ export const relatosIniciais = [
     ],
   },
   {
-    protocolo: 'SB-2026-0146', tipo: 'Bullying', data: '15/09/2026', quando: 'Antes disso', local: 'Internet',
-    envolvidos: 'Sim', extra: '', anonimo: false, anexo: 'print-grupo.jpg', meu: true,
+    protocolo: 'SB-2026-0146', tipo: 'Bullying', data: '15/09/2026', anonimo: false, anexo: 'print-grupo.jpg', meu: true,
+    extra: '',
+    respostas: {
+      'Está acontecendo há quanto tempo?': 'Meses ou mais',
+      'Acontece mais onde?': 'Internet',
+      'O que mais acontece?': 'Exclusão',
+      'Outras pessoas veem acontecer?': 'Sim',
+    },
     status: 'Encerrado',
     texto: 'Estavam me excluindo das atividades e fazendo comentários no grupo da turma.',
     historico: [
@@ -269,6 +313,5 @@ export function proximoProtocolo(relatos, data = hojeBR()) {
 // os filtros da gestão misturam tipo e status numa fila só (spec §6)
 export function combinaFiltro(r, filtro) {
   if (filtro === 'Todos') return true;
-  if (filtro === 'Outros') return r.tipo === 'Outra situação';
   return filtro === r.tipo || filtro === statusRelato[r.status].filtro;
 }

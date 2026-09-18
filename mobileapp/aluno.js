@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Animated, Modal, Pressable, Text, View } from 'react-native';
 import { Anim, Bar, Btn, c, Campo, Card, f, H, Icone, Opcao, Rotulo, Sabia, Shell, Stat, T, useNav, useStore } from './ui';
 import { ALUNO, avisos, categorias, comunidades, desenhos, iaPadrao, iaRespostas, itens, notas, slides } from './mock';
-import { AjudaHome } from './protecao';
+import { Central } from './protecao';
 
 // telas do aluno usam só a família violeta + neutros; verde (mint) fica reservado para "feito/certo"
 
@@ -182,7 +182,6 @@ function Inicio() {
         onPress={() => nav.abrir(ComunidadeDetalhe, { m: xadrez })}
       />
 
-      <AjudaHome />
     </>
   );
 }
@@ -1040,8 +1039,9 @@ function BemEstar() {
         ))}
       </Card>
 
-      <Card style={{ paddingVertical: 4 }}>
+      <Card style={{ gap: 0, paddingVertical: 4 }}>
         <Linha primeira icone="message-lock-outline" titulo="Canal anônimo" desc="Escreva sem se identificar" onPress={() => nav.abrir(CanalAnonimo, { onFim: nav.voltar })} />
+        <Linha icone="account-heart-outline" titulo="Falar com a escola" desc="Em particular, com a equipe de apoio" onPress={() => nav.abrir(Central)} />
       </Card>
 
       <Card style={{ flexDirection: 'row', gap: 10 }}>
