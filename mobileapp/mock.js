@@ -201,3 +201,53 @@ export const humores = [
   { nome: 'Ótimo', icone: 'emoticon-excited-outline' },
 ];
 export const humoresBase = [6, 14, 31, 42, 27]; // contagem agregada fictícia da escola
+
+// ——— Modo Foco ———
+// Semana fictícia; FOCO_HOJE é o último dia de focoDias e recebe as sessões novas.
+export const focoDias = ['SEG', 'TER', 'QUA', 'QUI', 'SEX'];
+export const FOCO_HOJE = focoDias[focoDias.length - 1];
+
+export const focoObjetivos = [
+  { id: 'estudos', nome: 'Estudos', icone: 'book-open-variant' },
+  { id: 'projeto', nome: 'Projeto', icone: 'laptop' },
+  { id: 'tarefa', nome: 'Tarefa', icone: 'notebook-edit-outline' },
+  { id: 'leitura', nome: 'Leitura', icone: 'book-open-page-variant' },
+  { id: 'revisao', nome: 'Revisão', icone: 'brain' },
+  { id: 'outro', nome: 'Outro', icone: 'star-four-points' },
+];
+
+export const focoDuracoes = [15, 25, 45, 60];
+
+// mais recente primeiro, como o histórico mostra
+export const focoSessoes = [
+  { dia: 'SEX', obj: 'projeto', titulo: 'Terminar o site da feira', min: 15, feita: true },
+  { dia: 'SEX', obj: 'estudos', titulo: 'Revisar equações do 2º grau', min: 25, feita: true },
+  { dia: 'QUI', obj: 'leitura', titulo: 'Ler um capítulo', min: 15, feita: true },
+  { dia: 'QUA', obj: 'revisao', titulo: 'Revisar para a prova', min: 45, feita: true },
+  { dia: 'TER', obj: 'tarefa', titulo: 'Atividade de português', min: 15, feita: false },
+  { dia: 'SEG', obj: 'estudos', titulo: 'Estudar matemática', min: 25, feita: true },
+];
+
+// sequência: dias seguidos, contando de hoje para trás, com ao menos uma sessão concluída
+export function focoSequencia(sessoes) {
+  const feitos = new Set(sessoes.filter((f) => f.feita).map((f) => f.dia));
+  let n = 0;
+  while (n < focoDias.length && feitos.has(focoDias[focoDias.length - 1 - n])) n++;
+  return n;
+}
+
+// resumo usado na home, no histórico e nas estatísticas
+export function resumoFoco(sessoes) {
+  const feitas = sessoes.filter((f) => f.feita);
+  const hoje = sessoes.filter((f) => f.dia === FOCO_HOJE);
+  return {
+    hoje,
+    concluidasHoje: hoje.filter((f) => f.feita).length,
+    minHoje: hoje.reduce((t, f) => t + (f.feita ? f.min : 0), 0),
+    minSemana: feitas.reduce((t, f) => t + f.min, 0),
+    sessoesSemana: feitas.length,
+    maior: feitas.reduce((m, f) => Math.max(m, f.min), 0),
+    seq: focoSequencia(sessoes),
+    porDia: focoDias.map((dia) => ({ dia, min: feitas.filter((f) => f.dia === dia).reduce((t, f) => t + f.min, 0) })),
+  };
+}

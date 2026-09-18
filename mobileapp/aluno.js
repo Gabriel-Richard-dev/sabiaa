@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { AccessibilityInfo, Animated, Modal, Pressable, Text, View } from 'react-native';
+import { AccessibilityInfo, Animated, BackHandler, Modal, Pressable, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Anim, Bar, Btn, c, Campo, Card, f, H, Icone, Opcao, Sabia, Shell, Stat, T, useNav, useStore } from './ui';
-import { ALUNO, avisos, categorias, comunidades, desenhos, iaPadrao, iaRespostas, itens, notas, slides } from './mock';
+import { ALUNO, avisos, categorias, comunidades, desenhos, focoDuracoes, focoObjetivos, humores, iaPadrao, iaRespostas, itens, notas, resumoFoco, slides } from './mock';
 
 // telas do aluno usam só a família violeta + neutros; verde (mint) fica reservado para "feito/certo"
 
@@ -42,9 +43,10 @@ function IconeCaixa({ name, size = 44 }) {
 }
 
 // linha clicável de lista: ícone, título, descrição e seta
+// sem onPress vira só uma linha de leitura (usada no histórico do Modo Foco)
 function Linha({ icone, titulo, desc, onPress, primeira }) {
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={titulo} accessibilityHint={desc || 'Abre esta seção'} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, minHeight: 64, borderTopWidth: primeira ? 0 : 2, borderColor: c.line }}>
+    <Pressable onPress={onPress} accessibilityRole={onPress ? 'button' : undefined} accessibilityLabel={onPress ? titulo : `${titulo}. ${desc || ''}`} accessibilityHint={onPress && (desc || 'Abre esta seção')} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, minHeight: 64, borderTopWidth: primeira ? 0 : 2, borderColor: c.line }}>
       <IconeCaixa name={icone} />
       <View style={{ flex: 1 }}>
         <T style={{ fontWeight: '800' }}>{titulo}</T>
@@ -58,7 +60,7 @@ function Linha({ icone, titulo, desc, onPress, primeira }) {
 const destaque = () => ({ backgroundColor: c.violetMist, borderColor: c.violetSoft });
 
 // cartão da home: rótulo, título, linhas e um botão (ou o selo de "feito")
-function CardHome({ icone, rotulo, titulo, sub = [], botao, onPress, feito, escuro }) {
+function CardHome({ icone, rotulo, titulo, sub = [], botao, onPress, feito, escuro, children }) {
   return (
     <Pressable accessible={false} onPress={onPress}>
       <Card style={[{ gap: 6 }, escuro && { backgroundColor: c.violetDeep, borderColor: c.violetDeep, borderBottomWidth: 6 }]}>
@@ -67,6 +69,7 @@ function CardHome({ icone, rotulo, titulo, sub = [], botao, onPress, feito, escu
         {sub.map((l) => (
           <T key={l} muted style={escuro && { color: c.violetMist }}>{l}</T>
         ))}
+        {children}
         <View style={{ marginTop: 4, alignItems: 'flex-start' }}>
           {feito ? <Feito texto={feito} claro={escuro} /> : <Btn title={botao} onPress={onPress} />}
         </View>
@@ -104,6 +107,7 @@ function Inicio() {
   const indo = s.comunidades.includes(xadrez.id);
   const aoVivo = s.live.aberta && slides[s.live.slide].opcoes && !(s.live.slide in s.respondidas);
   const pratica = praticaDoDia();
+  const foco = resumoFoco(s.focos);
 
   return (
     <>
@@ -130,6 +134,21 @@ function Inicio() {
           </View>
         </Card>
       </Pressable>
+
+      <CardHome
+        icone="target"
+        rotulo={foco.minHoje ? 'SEU FOCO HOJE' : 'MODO FOCO'}
+        titulo={foco.minHoje ? `${foco.minHoje} minutos focados` : 'Modo Foco'}
+        sub={
+          foco.minHoje
+            ? [`${foco.concluidasHoje} ${foco.concluidasHoje === 1 ? 'sessão concluída' : 'sessões concluídas'}`, `${foco.seq} dias de sequência`]
+            : ['Escolha um objetivo, deixe as distrações de lado e concentre-se no que importa.', `${foco.seq} dias de sequência · ${foco.minSemana} min focados esta semana`]
+        }
+        botao={foco.minHoje ? 'Focar novamente' : 'Começar foco'}
+        onPress={() => nav.abrir(Foco)}
+      >
+        {foco.minHoje > 0 && <Bar value={foco.minHoje} max={META_FOCO} label="Foco de hoje" />}
+      </CardHome>
 
       <CardHome
         icone={pratica.icone}
@@ -803,7 +822,8 @@ function Perfil() {
       <Notas />
 
       <Card style={{ gap: 0, paddingVertical: 4 }}>
-        <Linha primeira icone="bullhorn" titulo="Avisos" desc={`${avisos.length - s.lidos.length} não lidos`} onPress={() => nav.abrir(Avisos)} />
+        <Linha primeira icone="target" titulo="Meu foco" desc={`${resumoFoco(s.focos).minSemana} min focados esta semana`} onPress={() => nav.abrir(MeuFoco)} />
+        <Linha icone="bullhorn" titulo="Avisos" desc={`${avisos.length - s.lidos.length} não lidos`} onPress={() => nav.abrir(Avisos)} />
       </Card>
 
       <Card center style={{ backgroundColor: c.violetDeep, borderColor: c.violetDeep }}>
@@ -957,6 +977,314 @@ function Pratica({ id }) {
   if (id === 'respirar') return <Respiracao onFim={fim} />;
   if (id === 'emocoes') return <Emocoes onFim={fim} />;
   return <Ficha titulo={p.titulo} perguntas={fichas[id]} onFim={fim} />;
+}
+
+// ——— Modo Foco ———
+
+const META_FOCO = 60; // minutos por dia que enchem a barra da home
+const objetivo = (id) => focoObjetivos.find((o) => o.id === id) || focoObjetivos[0];
+const relogio = (seg) => `${String(Math.floor(seg / 60)).padStart(2, '0')}:${String(seg % 60).padStart(2, '0')}`;
+const notasFoco = ['Muito difícil', 'Difícil', 'Normal', 'Bom', 'Excelente'];
+
+// tela do timer: ocupa o aparelho inteiro de propósito, para sobrar só o essencial
+function Sessao({ sessao, onFim }) {
+  const s = useStore();
+  const obj = objetivo(sessao.obj);
+  const [restam, setRestam] = useState(sessao.min * 60);
+  const [pausado, setPausado] = useState(false);
+  const [confirmar, setConfirmar] = useState(false);
+
+  // ponytail: contagem por setInterval; guardar o instante do fim se o app precisar sobreviver ao segundo plano
+  useEffect(() => {
+    if (pausado || restam === 0) return undefined;
+    const t = setInterval(() => setRestam((r) => Math.max(0, r - 1)), 1000);
+    return () => clearInterval(t);
+  }, [pausado, restam === 0]);
+  useEffect(() => {
+    if (restam === 0) onFim(true);
+  }, [restam === 0]);
+
+  // o voltar do Android pede confirmação em vez de derrubar a sessão junto com a tela de trás
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      setConfirmar(true);
+      return true;
+    });
+    return () => sub.remove();
+  }, []);
+
+  return (
+    <Modal visible animationType={s.modoConforto ? 'none' : 'fade'} onRequestClose={() => setConfirmar(true)}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: c.violetMist }}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 14, padding: 24, width: '100%', maxWidth: 520, alignSelf: 'center' }}>
+          <Rotulo icone="target">MODO FOCO</Rotulo>
+          <Text
+            accessible
+            accessibilityLabel={`${Math.ceil(restam / 60)} minutos restantes`}
+            allowFontScaling
+            style={{ fontFamily: f.tituloExtra, fontSize: 68, lineHeight: 82, color: c.violetDeep }}
+          >
+            {relogio(restam)}
+          </Text>
+          <View style={{ height: 2, alignSelf: 'stretch', backgroundColor: c.violetSoft }} />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Icone name={obj.icone} size={20} color={c.violet} />
+            <T style={{ fontWeight: '800' }}>{obj.nome}</T>
+          </View>
+          <T muted style={{ fontSize: 17, textAlign: 'center' }}>“{sessao.titulo}”</T>
+
+          <View style={{ alignItems: 'center', gap: 2, marginTop: 8 }}>
+            <Icone name={pausado ? 'pause-circle-outline' : 'bell-off-outline'} size={26} color={c.slate} />
+            <T muted style={{ fontWeight: '700' }}>{pausado ? 'Sessão pausada' : 'Distrações pausadas'}</T>
+            <T muted style={{ fontSize: 12, textAlign: 'center' }}>Redes sociais voltam a ficar disponíveis ao término da sessão.</T>
+          </View>
+
+          {confirmar ? (
+            <View style={{ alignSelf: 'stretch', alignItems: 'center', gap: 10, marginTop: 8 }}>
+              <H small>Tem certeza?</H>
+              <T muted style={{ textAlign: 'center' }}>Sua sessão ainda não terminou. Você deseja encerrar?</T>
+              <Btn title="Continuar foco" onPress={() => setConfirmar(false)} style={{ alignSelf: 'stretch' }} />
+              <Btn title="Encerrar sessão" color={c.slate} onPress={() => onFim(false)} style={{ alignSelf: 'stretch' }} />
+            </View>
+          ) : (
+            <View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>
+              <Btn title={pausado ? 'Continuar' : 'Pausar'} icone={pausado ? 'play' : 'pause'} onPress={() => setPausado(!pausado)} />
+              <Btn title="Encerrar" icone="stop" color={c.slate} onPress={() => setConfirmar(true)} />
+            </View>
+          )}
+        </View>
+        <View pointerEvents="none" style={{ position: 'absolute', right: 12, bottom: 12 }}>
+          <Sabia size={84} equip={s.equip} anim={pausado ? 'idle1' : 'escrevendo'} />
+        </View>
+      </SafeAreaView>
+    </Modal>
+  );
+}
+
+function FocoFim({ sessao, nota, onNota }) {
+  const s = useStore();
+  const nav = useNav();
+  const obj = objetivo(sessao.obj);
+  const { seq } = resumoFoco(s.focos);
+  return (
+    <>
+      <Card center style={[destaque(), { paddingVertical: 24 }]}>
+        <Anim nome={sessao.feita ? 'feliz' : 'idle1'} size={170} />
+        <H>{sessao.feita ? 'Foco concluído!' : 'Tudo bem recomeçar'}</H>
+        <T muted style={{ textAlign: 'center' }}>
+          {sessao.feita ? 'Você reservou esse tempo para cuidar do seu aprendizado.' : 'O importante é continuar. Volte quando quiser — a sessão ficou registrada como interrompida.'}
+        </T>
+        {sessao.feita && (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Text style={{ fontFamily: f.tituloExtra, fontSize: 34, lineHeight: 42, color: c.violet }}>+{sessao.min} XP</Text>
+            <Icone name="star-four-points" size={30} color={c.violet} />
+          </View>
+        )}
+        <T style={{ fontWeight: '800' }}>{sessao.min} minutos · {obj.nome}</T>
+        {sessao.feita && seq > 0 && <Feito texto={`Sequência mantida · ${seq} dias`} />}
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'stretch', backgroundColor: c.snow, borderRadius: 12, padding: 10 }}>
+          <Icone name="chat-processing-outline" size={20} color={c.violet} />
+          <T style={{ flex: 1, fontSize: 14 }}>{sessao.feita ? 'Mandou bem! Mais uma sessão concluída.' : 'Todo tempo de foco conta. Vamos de novo quando você quiser?'}</T>
+        </View>
+      </Card>
+
+      <Card>
+        <H small>Como foi seu foco?</H>
+        <View style={{ flexDirection: 'row', gap: 6 }}>
+          {notasFoco.map((n, i) => {
+            const ativo = nota === i;
+            return (
+              <Pressable
+                key={n}
+                onPress={() => onNota(i)}
+                accessibilityRole="radio"
+                accessibilityLabel={n}
+                accessibilityState={{ checked: ativo }}
+                style={{ flex: 1, alignItems: 'center', paddingVertical: 8, minHeight: 72, borderRadius: 12, borderWidth: 2, borderColor: ativo ? c.violet : c.line, backgroundColor: ativo ? c.violetMist : c.snow }}
+              >
+                <Icone accessible={false} name={humores[i].icone} size={28} color={ativo ? c.violet : c.slate} />
+                <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 10, color: ativo ? c.violet : c.slate, textAlign: 'center' }}>{n}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+        <T muted style={{ fontSize: 13 }}>{nota == null ? 'Opcional — ajuda a acompanhar seu progresso.' : 'Obrigado por contar!'}</T>
+      </Card>
+
+      <Btn title="Voltar para a Home" onPress={() => nav.irAba('Início')} />
+      <Btn title="Ver meu foco" icone="chart-bar" color={c.violetDeep} onPress={() => nav.abrir(MeuFoco)} />
+    </>
+  );
+}
+
+function Foco() {
+  const s = useStore();
+  const nav = useNav();
+  const [obj, setObj] = useState(focoObjetivos[0].id);
+  const [titulo, setTitulo] = useState('');
+  const [min, setMin] = useState(25); // null = duração personalizada
+  const [livre, setLivre] = useState('');
+  const [sessao, setSessao] = useState(null);
+  const [fim, setFim] = useState(null);
+  const [nota, setNota] = useState(null);
+
+  const minutos = min ?? Math.floor(Number(livre));
+  const valido = minutos >= 1 && minutos <= 180;
+  const { seq, minSemana } = resumoFoco(s.focos);
+
+  const terminar = (feita) => {
+    const f = { ...sessao, feita };
+    s.registrarFoco(f);
+    setSessao(null);
+    setFim(f);
+  };
+  const avaliar = (n) => {
+    setNota(n);
+    s.avaliarFoco(n);
+  };
+
+  if (sessao) return <Sessao sessao={sessao} onFim={terminar} />;
+  if (fim) return <FocoFim sessao={fim} nota={nota} onNota={avaliar} />;
+
+  return (
+    <>
+      <Card center style={[destaque(), { gap: 10 }]}>
+        <Sabia size={130} equip={s.equip} />
+        <H>Vamos focar juntos?</H>
+        <T muted style={{ textAlign: 'center' }}>{seq} dias de sequência · {minSemana} min focados esta semana</T>
+      </Card>
+
+      <Card>
+        <H small>O que você quer fazer?</H>
+        <Campo label="Sua atividade" value={titulo} onChangeText={setTitulo} placeholder="Digite sua atividade..." maxLength={60} />
+        <T muted style={{ fontSize: 13 }}>Ex.: estudar matemática, ler um capítulo, revisar para a prova.</T>
+      </Card>
+
+      <Card>
+        <H small>Quanto tempo você quer focar?</H>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          {focoDuracoes.map((d) => (
+            <Pressable
+              key={d}
+              onPress={() => setMin(d)}
+              accessibilityRole="radio"
+              accessibilityLabel={`${d} minutos`}
+              accessibilityState={{ checked: min === d }}
+              style={{ paddingHorizontal: 16, paddingVertical: 10, minHeight: 44, justifyContent: 'center', borderRadius: 16, borderWidth: 2, borderColor: min === d ? c.violet : c.line, backgroundColor: min === d ? c.violet : c.snow }}
+            >
+              <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 14, color: min === d ? c.snow : c.slate }}>{d} min</Text>
+            </Pressable>
+          ))}
+          <Pressable
+            onPress={() => setMin(null)}
+            accessibilityRole="radio"
+            accessibilityLabel="Duração personalizada"
+            accessibilityState={{ checked: min === null }}
+            style={{ paddingHorizontal: 16, paddingVertical: 10, minHeight: 44, justifyContent: 'center', borderRadius: 16, borderWidth: 2, borderColor: min === null ? c.violet : c.line, backgroundColor: min === null ? c.violet : c.snow }}
+          >
+            <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 14, color: min === null ? c.snow : c.slate }}>Personalizado</Text>
+          </Pressable>
+        </View>
+        {min === null && (
+          <>
+            <Campo label="Minutos" value={livre} onChangeText={setLivre} placeholder="Minutos (1 a 180)" keyboardType="number-pad" maxLength={3} />
+            {!valido && livre !== '' && <T style={{ fontSize: 13, color: c.coralDark }}>Escolha um tempo entre 1 e 180 minutos.</T>}
+          </>
+        )}
+      </Card>
+
+      <Card>
+        <H small>Escolha seu objetivo</H>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 8 }}>
+          {focoObjetivos.map((o) => {
+            const on = obj === o.id;
+            return (
+              <Pressable
+                key={o.id}
+                onPress={() => setObj(o.id)}
+                accessibilityRole="radio"
+                accessibilityLabel={o.nome}
+                accessibilityState={{ checked: on }}
+                style={{ width: '31%', alignItems: 'center', gap: 4, paddingVertical: 12, minHeight: 76, borderRadius: 16, borderWidth: 2, borderColor: on ? c.violet : c.line, backgroundColor: on ? c.violetMist : c.snow }}
+              >
+                <Icone accessible={false} name={o.icone} size={26} color={on ? c.violet : c.slate} />
+                <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 12, color: on ? c.violet : c.slate }}>{o.nome}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </Card>
+
+      <Btn
+        title="Começar sessão"
+        icone="play"
+        disabled={!valido}
+        accessibilityHint={valido ? `Inicia ${minutos} minutos de foco` : 'Escolha uma duração válida'}
+        onPress={() => setSessao({ obj, titulo: titulo.trim() || objetivo(obj).nome, min: minutos })}
+      />
+      <Btn title="Meu foco" icone="chart-bar" color={c.violetDeep} onPress={() => nav.abrir(MeuFoco)} />
+    </>
+  );
+}
+
+function MeuFoco() {
+  const s = useStore();
+  const { hoje, minSemana, sessoesSemana, maior, seq, porDia } = resumoFoco(s.focos);
+  const maxDia = Math.max(1, ...porDia.map((d) => d.min));
+  return (
+    <>
+      <View>
+        <H>Meu foco</H>
+        <T muted>Seu tempo de concentração desta semana.</T>
+      </View>
+
+      <Rotulo icone="calendar-today">HOJE</Rotulo>
+      <Card style={{ gap: 0, paddingVertical: 4 }}>
+        {hoje.length ? (
+          hoje.map((sess, i) => (
+            <Linha
+              key={i}
+              primeira={i === 0}
+              icone={objetivo(sess.obj).icone}
+              titulo={sess.titulo}
+              desc={`${sess.min} min · ${sess.feita ? 'Concluído' : 'Interrompido'}${sess.nota != null ? ` · ${notasFoco[sess.nota]}` : ''}`}
+            />
+          ))
+        ) : (
+          <T muted style={{ paddingVertical: 12 }}>Nenhuma sessão hoje ainda. Que tal começar?</T>
+        )}
+      </Card>
+
+      <Rotulo icone="chart-bar">ESTA SEMANA</Rotulo>
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <Stat valor={`${minSemana}`} label="min focados" />
+        <Stat valor={sessoesSemana} label="sessões concluídas" />
+      </View>
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <Stat valor={`${maior}`} label="maior sessão (min)" />
+        <Stat valor={seq} label="dias de sequência" cor={c.amberDark} />
+      </View>
+
+      <Card>
+        <H small>Tempo focado por dia</H>
+        <View accessible accessibilityLabel={`Minutos por dia: ${porDia.map((d) => `${d.dia}, ${d.min}`).join('; ')}`} style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 10, height: 110, marginTop: 4 }}>
+          {porDia.map((d) => (
+            <View key={d.dia} style={{ flex: 1, alignItems: 'center', gap: 4 }}>
+              <T muted style={{ fontSize: 11 }}>{d.min}</T>
+              <View style={{ width: '70%', height: Math.max(4, (d.min / maxDia) * 70), backgroundColor: d.min ? c.violet : c.line, borderRadius: 4 }} />
+              <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 11, color: c.slate }}>{d.dia}</Text>
+            </View>
+          ))}
+        </View>
+      </Card>
+
+      <Card style={destaque()}>
+        <Rotulo icone="fire" cor={c.amberDark}>SUA SEQUÊNCIA</Rotulo>
+        <H>{seq} {seq === 1 ? 'dia' : 'dias'}</H>
+        <T muted>{seq > 0 ? 'Continue amanhã para manter sua sequência.' : 'Tudo bem recomeçar. O importante é continuar.'}</T>
+      </Card>
+    </>
+  );
 }
 
 function CanalAnonimo({ onFim }) {
