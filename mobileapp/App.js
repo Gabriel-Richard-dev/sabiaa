@@ -3,9 +3,9 @@ import { useFonts } from 'expo-font';
 import { Baloo2_700Bold, Baloo2_800ExtraBold } from '@expo-google-fonts/baloo-2';
 import { Nunito_500Medium, Nunito_700Bold, Nunito_800ExtraBold } from '@expo-google-fonts/nunito';
 import { useEffect, useState } from 'react';
-import { Image, View } from 'react-native';
+import { AccessibilityInfo, Image, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Anim, Btn, c, Store, T } from './ui';
+import { Anim, Btn, c, ModoConforto, setPalette, Store, T } from './ui';
 import { atividadesIniciais, eventosIniciais, nivel, slides, TOTAL_TURMA } from './mock';
 import AppAluno from './aluno';
 import AppProfessor from './professor';
@@ -33,6 +33,10 @@ function useSabia() {
   const [desenho, setDesenho] = useState(null);
   const [lidos, setLidos] = useState([]);
   const [praticas, setPraticas] = useState([]);
+  const [modoConforto, setModoConforto] = useState(false);
+
+  // A paleta principal só muda quando o usuário opta pelo Modo Conforto.
+  setPalette(modoConforto);
 
   // colegas fictícios respondendo aos poucos enquanto a pergunta está aberta
   useEffect(() => {
@@ -55,7 +59,8 @@ function useSabia() {
   const nv = nivel(xp);
 
   return {
-    perfil, entrar: setPerfil, sair: () => setPerfil(null),
+    perfil, entrar: setPerfil, sair: () => setPerfil(null), modoConforto,
+    alternarModoConforto: () => setModoConforto((v) => !v),
     xp, nivel: nv, equip, params, setParams, atividades, feitas, eventos, eventosFeitos,
     live, respondidas, humorHoje, mensagens, comunidades, desenho, lidos, praticas, toast,
 
@@ -117,6 +122,7 @@ export default function App() {
   const [abrindo, setAbrindo] = useState(true);
   useEffect(() => {
     const t = setTimeout(() => setAbrindo(false), 3000);
+    AccessibilityInfo.isReduceMotionEnabled().then((reduzido) => reduzido && setAbrindo(false));
     return () => clearTimeout(t);
   }, []);
   if (!fontes || abrindo) {
@@ -136,9 +142,10 @@ export default function App() {
         ) : (
           <SafeAreaView style={{ flex: 1, backgroundColor: c.violetMist }}>
             <View style={{ flex: 1, justifyContent: 'center', padding: 24, gap: 12, maxWidth: 420, width: '100%', alignSelf: 'center' }}>
-              <Image source={require('./assets/logo.png')} style={{ width: 220, height: 70, alignSelf: 'center' }} resizeMode="contain" />
+              <Image accessibilityRole="image" accessibilityLabel="Logo Sabiaa" source={require('./assets/logo.png')} style={{ width: 220, height: 70, alignSelf: 'center' }} resizeMode="contain" />
               <Anim nome="feliz" size={200} style={{ alignSelf: 'center' }} />
               <T muted style={{ textAlign: 'center', marginBottom: 8 }}>Escolha como você quer entrar</T>
+              <ModoConforto />
               <Btn icone="bag-personal-outline" title="Sou aluno" onPress={() => s.entrar('aluno')} />
               <Btn icone="human-male-board" title="Sou professor" color={c.sky} onPress={() => s.entrar('professor')} />
               <Btn icone="domain" title="Gestão escolar" color={c.mint} onPress={() => s.entrar('gestao')} />

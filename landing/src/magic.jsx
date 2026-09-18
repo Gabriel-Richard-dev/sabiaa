@@ -1,16 +1,29 @@
 // Efeitos no estilo Magic UI (magicui.design), reescritos no mínimo necessário.
 import { motion, useInView, useMotionValue, useSpring } from 'motion/react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+function useReduceMotion() {
+  const [reduzir, setReduzir] = useState(false)
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const atualizar = () => setReduzir(media.matches)
+    atualizar()
+    media.addEventListener?.('change', atualizar)
+    return () => media.removeEventListener?.('change', atualizar)
+  }, [])
+  return reduzir
+}
 
 /** BlurFade: revela o bloco com blur + subida quando entra na viewport. */
 export function BlurFade({ children, delay = 0, className }) {
+  const reduzir = useReduceMotion()
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
+      initial={reduzir ? false : { opacity: 0, y: 24, filter: 'blur(8px)' }}
       whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
       viewport={{ once: true, margin: '-80px' }}
-      transition={{ delay, duration: 0.5, ease: 'easeOut' }}
+      transition={reduzir ? { duration: 0 } : { delay, duration: 0.5, ease: 'easeOut' }}
     >
       {children}
     </motion.div>
@@ -19,23 +32,24 @@ export function BlurFade({ children, delay = 0, className }) {
 
 /** NumberTicker: conta de 0 até value quando aparece na tela. */
 export function NumberTicker({ value, suffix = '', className }) {
+  const reduzir = useReduceMotion()
   const ref = useRef(null)
   const emVista = useInView(ref, { once: true, margin: '-40px' })
   const mv = useMotionValue(0)
   const spring = useSpring(mv, { damping: 30, stiffness: 120 })
 
   useEffect(() => {
-    if (emVista) mv.set(value)
-  }, [emVista, mv, value])
+    if (emVista && !reduzir) mv.set(value)
+  }, [emVista, mv, reduzir, value])
 
   useEffect(
-    () => spring.on('change', (v) => {
+    () => reduzir ? undefined : spring.on('change', (v) => {
       if (ref.current) ref.current.textContent = Math.round(v) + suffix
     }),
-    [spring, suffix],
+    [reduzir, spring, suffix],
   )
 
-  return <span ref={ref} className={className}>0{suffix}</span>
+  return <span ref={ref} aria-label={`${value}${suffix}`} className={className}>{reduzir ? `${value}${suffix}` : `0${suffix}`}</span>
 }
 
 // posição, largura e duração do balanço de cada nuvem; as de cima somem no mobile
@@ -71,7 +85,7 @@ export function ShimmerButton({ href, children, className = '' }) {
   return (
     <a href={href} className={`btn-pilula relative overflow-hidden ${className}`}>
       <span className="relative z-10">{children}</span>
-      <span className="absolute inset-0 -translate-x-full animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+      <span aria-hidden="true" className="absolute inset-0 -translate-x-full animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
     </a>
   )
 }
@@ -84,18 +98,19 @@ export function ShimmerButton({ href, children, className = '' }) {
 //   split[a][b];[b]trim=start_frame=1,setpts=PTS-STARTPTS,reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[a][r]concat=n=2:v=1:a=0
 // voltar o currentTime quadro a quadro travava: cada seek decodificava desde o único keyframe.
 export function LoopVideo({ src, loopStart = 0, className }) {
+  const reduzir = useReduceMotion()
   const ref = useRef(null)
 
   // lazy: só baixa e toca perto da tela; fora dela pausa para poupar CPU
   useEffect(() => {
     const v = ref.current
     const io = new IntersectionObserver(
-      ([e]) => (e.isIntersecting ? v.play().catch(() => {}) : v.pause()),
+      ([e]) => (e.isIntersecting && !reduzir ? v.play().catch(() => {}) : v.pause()),
       { rootMargin: '200px' },
     )
     io.observe(v)
     return () => io.disconnect()
-  }, [])
+  }, [reduzir])
 
   return (
     <video
@@ -103,10 +118,12 @@ export function LoopVideo({ src, loopStart = 0, className }) {
       preload="none"
       muted
       playsInline
+      aria-hidden="true"
+      tabIndex={-1}
       loop={loopStart === 0}
       onEnded={() => {
         const v = ref.current
-        if (!v || loopStart === 0) return
+        if (!v || loopStart === 0 || reduzir) return
         v.currentTime = loopStart
         v.play()
       }}

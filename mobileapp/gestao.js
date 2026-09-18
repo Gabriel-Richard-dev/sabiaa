@@ -31,7 +31,7 @@ function Painel() {
                 <T style={{ fontWeight: '700' }}>{t.nome}</T>
                 <T style={{ color: ok ? c.mint : c.coral, fontWeight: '700' }}>{t.participacao}%{ok ? '' : ' · abaixo da meta'}</T>
               </View>
-              <Bar value={t.participacao} color={ok ? c.mint : c.amber} />
+              <Bar value={t.participacao} color={ok ? c.mint : c.amber} label={`Participação da turma ${t.nome}`} />
               <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 6, height: 44 }}>
                 {t.hist.map((v, i) => (
                   <View key={i} style={{ flex: 1, alignItems: 'center' }}>
@@ -51,7 +51,7 @@ function Painel() {
           <View key={a.nome} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <T style={{ flex: 1 }}>{a.nome}</T>
             <View style={{ width: 110 }}>
-              <Bar value={a.participacao} color={a.participacao >= s.params.meta ? c.mint : c.amber} />
+              <Bar value={a.participacao} color={a.participacao >= s.params.meta ? c.mint : c.amber} label={`Participação de ${a.nome}`} />
             </View>
           </View>
         ))}
@@ -64,7 +64,7 @@ function Painel() {
             <Icone name={h.icone} size={22} color={c.slate} />
             <T muted style={{ width: 70, fontSize: 13 }}>{h.nome}</T>
             <View style={{ flex: 1 }}>
-              <Bar value={contagem[i]} max={totalHumor} color={i < 2 ? c.coral : i === 2 ? c.amber : c.mint} />
+              <Bar value={contagem[i]} max={totalHumor} color={i < 2 ? c.coral : i === 2 ? c.amber : c.mint} label={`Bem-estar: ${h.nome}`} />
             </View>
             <T muted style={{ width: 32, textAlign: 'right' }}>{contagem[i]}</T>
           </View>
@@ -84,10 +84,10 @@ function Eventos() {
     <>
       <Card>
         <H small>Criar evento</H>
-        <Campo value={f.titulo} onChangeText={(titulo) => setF({ ...f, titulo })} placeholder="Nome do evento" />
-        <Campo value={f.periodo} onChangeText={(periodo) => setF({ ...f, periodo })} placeholder="Período (ex.: 1 a 5 de outubro)" />
-        <Campo value={f.publico} onChangeText={(publico) => setF({ ...f, publico })} placeholder="Público (ex.: 9º anos)" />
-        <Campo value={f.bonus} onChangeText={(bonus) => setF({ ...f, bonus: bonus.replace(/\D/g, '') })} placeholder="Pontos bônus" keyboardType="number-pad" />
+        <Campo label="Nome do evento" value={f.titulo} onChangeText={(titulo) => setF({ ...f, titulo })} placeholder="Nome do evento" />
+        <Campo label="Período do evento" value={f.periodo} onChangeText={(periodo) => setF({ ...f, periodo })} placeholder="Período (ex.: 1 a 5 de outubro)" />
+        <Campo label="Público do evento" value={f.publico} onChangeText={(publico) => setF({ ...f, publico })} placeholder="Público (ex.: 9º anos)" />
+        <Campo label="Pontos bônus" value={f.bonus} onChangeText={(bonus) => setF({ ...f, bonus: bonus.replace(/\D/g, '') })} placeholder="Pontos bônus" keyboardType="number-pad" />
         <Btn
           title="Publicar evento"
           disabled={!ok}
@@ -114,9 +114,9 @@ function Parametro({ label, desc, valor, onChange, passo, sufixo = '' }) {
       <H small>{label}</H>
       <T muted style={{ fontSize: 13 }}>{desc}</T>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, justifyContent: 'center' }}>
-        <Btn small title="−" onPress={() => onChange(Math.max(0, valor - passo))} />
+        <Btn small title="−" accessibilityLabel={`Diminuir ${label}`} onPress={() => onChange(Math.max(0, valor - passo))} />
         <T style={{ fontSize: 26, fontWeight: '800', minWidth: 80, textAlign: 'center' }}>{valor}{sufixo}</T>
-        <Btn small title="+" onPress={() => onChange(Math.min(sufixo === '%' ? 100 : 999, valor + passo))} />
+        <Btn small title="+" accessibilityLabel={`Aumentar ${label}`} onPress={() => onChange(Math.min(sufixo === '%' ? 100 : 999, valor + passo))} />
       </View>
     </Card>
   );
