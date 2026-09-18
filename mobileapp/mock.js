@@ -21,9 +21,11 @@ export function nivel(xp) {
 export const categorias = ['ACESSÓRIOS', 'CHAPÉUS', 'ITENS', 'DIVERSIDADE'];
 
 export const tiposSabia = [
-  { id: 'classico', nome: 'Sabiá clássico', desc: 'O visual original', imagem: null },
-  { id: 'cadeirante', nome: 'Sabiá cadeirante', desc: 'Mobilidade também é voar', imagem: require('./assets/sabias/cadeirante.png') },
-  { id: 'protese', nome: 'Sabiá com prótese', desc: 'Cada história tem seu jeito', imagem: require('./assets/sabias/protese.png') },
+  { id: 'classico', nome: 'Clássico', desc: 'O visual original', imagem: null },
+  { id: 'cadeirante', nome: 'Cadeirante', desc: 'Mobilidade também é voar', imagem: require('./assets/sabias/cadeirante.png') },
+  { id: 'protese', nome: 'Com prótese', desc: 'Cada história tem seu jeito', imagem: require('./assets/sabias/protese.png') },
+  { id: 'autista', nome: 'Autista', desc: 'Um jeito único de sentir o mundo', imagem: require('./assets/sabias/autista.png'), escala: 0.80 },
+  { id: 'cego', nome: 'Deficiente visual', desc: 'Autonomia para encontrar caminhos', imagem: require('./assets/sabias/cego.png') },
 ];
 
 // x/y (canto superior esquerdo) e tam em fração do quadro 640x640 dos vídeos idle; icone = nome no MaterialCommunityIcons

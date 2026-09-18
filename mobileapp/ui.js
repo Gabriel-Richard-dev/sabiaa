@@ -243,7 +243,7 @@ export function Sabia({ size = 160, equip = {}, anim = 'idle1', tipo = 'classico
   const variante = tiposSabia.find((t) => t.id === tipo) || tiposSabia[0];
   return (
     <View accessible={false} importantForAccessibility="no-hide-descendants" style={{ width: size, height: size }}>
-      {variante.imagem ? <Image source={variante.imagem} resizeMode="contain" style={{ width: size, height: size }} /> : <Anim nome={anim} size={size} />}
+      {variante.imagem ? <Image source={variante.imagem} resizeMode="contain" style={{ width: size, height: size, transform: [{ scale: variante.escala || 1 }] }} /> : <Anim nome={anim} size={size} />}
       {itens
         .filter((it) => equip[it.slot] === it.id)
         .map((it) => (
