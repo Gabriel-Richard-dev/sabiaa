@@ -1,19 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Animated, BackHandler, Modal, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Anim, Bar, Btn, c, Campo, Card, f, H, Icone, Opcao, Sabia, Shell, Stat, T, useNav, useStore } from './ui';
+import { Anim, Bar, Btn, c, Campo, Card, f, H, Icone, Opcao, Rotulo, Sabia, Shell, Stat, T, useNav, useStore } from './ui';
 import { ALUNO, avisos, categorias, comunidades, desenhos, focoDuracoes, focoObjetivos, humores, iaPadrao, iaRespostas, itens, notas, resumoFoco, slides } from './mock';
+import { Central } from './protecao';
 
 // telas do aluno usam só a família violeta + neutros; verde (mint) fica reservado para "feito/certo"
-
-function Rotulo({ children, icone, cor = c.violet }) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-      {icone && <Icone name={icone} size={15} color={cor} />}
-      <Text style={{ fontFamily: f.extra, fontSize: 12, letterSpacing: 1, color: cor }}>{children}</Text>
-    </View>
-  );
-}
 
 function Feito({ texto, claro }) {
   const cor = claro ? c.mintSoft : c.mintDark;
@@ -1374,8 +1366,9 @@ function BemEstar() {
         ))}
       </Card>
 
-      <Card style={{ paddingVertical: 4 }}>
+      <Card style={{ gap: 0, paddingVertical: 4 }}>
         <Linha primeira icone="message-lock-outline" titulo="Canal anônimo" desc="Escreva sem se identificar" onPress={() => nav.abrir(CanalAnonimo, { onFim: nav.voltar })} />
+        <Linha icone="account-heart-outline" titulo="Falar com a escola" desc="Em particular, com a equipe de apoio" onPress={() => nav.abrir(Central)} />
       </Card>
 
       <Card style={{ flexDirection: 'row', gap: 10 }}>
