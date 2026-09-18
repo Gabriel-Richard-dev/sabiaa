@@ -179,6 +179,52 @@ export function Opcao({ texto, onPress, estado }) {
   );
 }
 
+// rótulo em caixa alta acima de um bloco
+export function Rotulo({ children, icone, cor = c.violet }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+      {icone && <Icone name={icone} size={15} color={cor} />}
+      <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 12, letterSpacing: 1, color: cor }}>{children}</Text>
+    </View>
+  );
+}
+
+// selo de status: bolinha + texto, sobre o tom claro da própria cor
+export function Selo({ texto, cor = 'violet' }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: c[`${cor}Soft`] }}>
+      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: c[`${cor}Dark`] ?? c[cor] }} />
+      <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 12, color: c[`${cor}Dark`] ?? c[cor] }}>{texto}</Text>
+    </View>
+  );
+}
+
+// fila de pílulas de escolha única; serve tanto para formulário quanto para filtro
+export function Escolha({ label, opcoes, valor, onChange }) {
+  return (
+    <View style={{ gap: 8 }}>
+      {label ? <T style={{ fontWeight: '700' }}>{label}</T> : null}
+      <View accessibilityRole="radiogroup" accessibilityLabel={label} style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+        {opcoes.map((o) => {
+          const on = o === valor;
+          return (
+            <Pressable
+              key={o}
+              onPress={() => onChange(o)}
+              accessibilityRole="radio"
+              accessibilityLabel={o}
+              accessibilityState={{ checked: on }}
+              style={{ flexShrink: 1, paddingHorizontal: 14, paddingVertical: 8, minHeight: 44, justifyContent: 'center', borderRadius: 16, borderWidth: 2, borderColor: on ? c.violet : c.line, backgroundColor: on ? c.violet : c.snow }}
+            >
+              <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 13, color: on ? c.snow : c.slate }}>{o}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
 export function Campo({ label, accessibilityLabel, ...props }) {
   return (
     <TextInput

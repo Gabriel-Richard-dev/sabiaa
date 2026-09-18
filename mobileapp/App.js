@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { AccessibilityInfo, Image, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Anim, Btn, c, ModoConforto, setPalette, Store, T } from './ui';
-import { atividadesIniciais, eventosIniciais, nivel, slides, TOTAL_TURMA } from './mock';
+import { atividadesIniciais, eventosIniciais, hojeBR, nivel, proximoProtocolo, relatosIniciais, slides, TOTAL_TURMA } from './mock';
 import AppAluno from './aluno';
 import AppProfessor from './professor';
 import AppGestao from './gestao';
@@ -34,6 +34,7 @@ function useSabia() {
   const [lidos, setLidos] = useState([]);
   const [praticas, setPraticas] = useState([]);
   const [modoConforto, setModoConforto] = useState(false);
+  const [relatos, setRelatos] = useState(relatosIniciais);
 
   // A paleta principal só muda quando o usuário opta pelo Modo Conforto.
   setPalette(modoConforto);
@@ -62,7 +63,7 @@ function useSabia() {
     perfil, entrar: setPerfil, sair: () => setPerfil(null), modoConforto,
     alternarModoConforto: () => setModoConforto((v) => !v),
     xp, nivel: nv, equip, params, setParams, atividades, feitas, eventos, eventosFeitos,
-    live, respondidas, humorHoje, mensagens, comunidades, desenho, lidos, praticas, toast,
+    live, respondidas, humorHoje, mensagens, comunidades, desenho, lidos, praticas, toast, relatos,
 
     fecharToast: () => setToast(null),
     // nível novo ainda não comemorado abre o modal de recompensa
@@ -112,6 +113,29 @@ function useSabia() {
 
     registrarHumor: setHumorHoje,
     enviarAnonimo: (m) => setMensagens([m, ...mensagens]),
+
+    // Central de Proteção: protocolo segue o maior já usado; nada sai do aparelho (demo).
+    enviarRelato: (dados) => {
+      const data = hojeBR();
+      const novo = {
+        ...dados,
+        protocolo: proximoProtocolo(relatos, data),
+        data,
+        meu: true,
+        status: 'Recebido',
+        historico: [{ quando: data.slice(0, 5), status: 'Recebido', texto: dados.anonimo ? 'Relato anônimo recebido.' : 'O estudante enviou um novo relato.' }],
+      };
+      setRelatos([novo, ...relatos]);
+      return novo;
+    },
+    registrarAcao: (protocolo, status, texto) =>
+      setRelatos((l) =>
+        l.map((r) =>
+          r.protocolo === protocolo
+            ? { ...r, status: status || r.status, historico: [...r.historico, { quando: hojeBR().slice(0, 5), status: status || r.status, texto }] }
+            : r,
+        ),
+      ),
   };
 }
 

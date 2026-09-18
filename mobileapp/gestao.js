@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { Bar, Btn, c, Campo, Card, H, Icone, Shell, Stat, T, useStore } from './ui';
 import { alunos9A, humores, humoresBase, turmas } from './mock';
+import { CentralGestao } from './protecao';
 
 const meses = ['Jun', 'Jul', 'Ago', 'Set'];
 
@@ -140,6 +141,7 @@ export default function AppGestao() {
       perfil="Coordenação · EEM Sabiá"
       tabs={[
         { key: 'Painel', icone: 'chart-box-outline', Tela: Painel },
+        { key: 'Proteção', icone: 'shield-account-outline', Tela: CentralGestao },
         { key: 'Eventos', icone: 'calendar-month-outline', Tela: Eventos },
         { key: 'Parâmetros', icone: 'tune-variant', Tela: Parametros },
       ]}

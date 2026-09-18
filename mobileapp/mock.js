@@ -201,3 +201,74 @@ export const humores = [
   { nome: 'Ótimo', icone: 'emoticon-excited-outline' },
 ];
 export const humoresBase = [6, 14, 31, 42, 27]; // contagem agregada fictícia da escola
+
+// Central de Proteção e Apoio (specs/bullyng-spec.md). Fluxo mockado: nenhum dado real.
+export const tiposRelato = ['Bullying', 'Assédio', 'Outra situação'];
+export const locaisRelato = ['Sala', 'Pátio', 'Banheiro', 'Internet', 'Outro'];
+export const quandosRelato = ['Hoje', 'Ontem', 'Esta semana', 'Antes disso'];
+export const envolvidosRelato = ['Sim', 'Não', 'Prefiro não responder'];
+
+// nome da cor em `c` (ui.js); resolvido na hora de renderizar para acompanhar o Modo Conforto
+export const statusRelato = {
+  Recebido: { cor: 'amber', filtro: 'Novos' },
+  'Em análise': { cor: 'sky', filtro: 'Em análise' },
+  'Em acompanhamento': { cor: 'violet', filtro: 'Em acompanhamento' },
+  Encerrado: { cor: 'mint', filtro: 'Encerrados' },
+};
+
+// os cards da gestão somam a fila fictícia da escola ao que existe na lista (como humoresBase)
+export const relatosBase = { Recebido: 4, 'Em análise': 6, 'Em acompanhamento': 2, Encerrado: 11 };
+
+export function hojeBR() {
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+}
+
+export const relatosIniciais = [
+  {
+    protocolo: 'SB-2026-0148', tipo: 'Bullying', data: '17/09/2026', quando: 'Esta semana', local: 'Pátio',
+    envolvidos: 'Sim', extra: 'Acontece quase todo dia no intervalo.', anonimo: false, anexo: null, meu: true,
+    status: 'Em análise',
+    texto: 'Alguns alunos estão fazendo comentários sobre mim durante o intervalo.',
+    historico: [
+      { quando: '17/09', status: 'Recebido', texto: 'O estudante enviou um novo relato.' },
+      { quando: '17/09', status: 'Em análise', texto: 'Caso encaminhado para análise da equipe responsável.' },
+    ],
+  },
+  {
+    protocolo: 'SB-2026-0147', tipo: 'Assédio', data: '16/09/2026', quando: 'Antes disso', local: 'Outro',
+    envolvidos: 'Prefiro não responder', extra: '', anonimo: true, anexo: null, meu: false,
+    status: 'Em acompanhamento',
+    texto: 'Gostaria de conversar com alguém sobre uma situação que aconteceu na escola.',
+    historico: [
+      { quando: '16/09', status: 'Recebido', texto: 'Relato anônimo recebido.' },
+      { quando: '16/09', status: 'Em análise', texto: 'Caso encaminhado para análise da equipe responsável.' },
+      { quando: '18/09', status: 'Em acompanhamento', texto: 'Atendimento iniciado.' },
+    ],
+  },
+  {
+    protocolo: 'SB-2026-0146', tipo: 'Bullying', data: '15/09/2026', quando: 'Antes disso', local: 'Internet',
+    envolvidos: 'Sim', extra: '', anonimo: false, anexo: 'print-grupo.jpg', meu: true,
+    status: 'Encerrado',
+    texto: 'Estavam me excluindo das atividades e fazendo comentários no grupo da turma.',
+    historico: [
+      { quando: '15/09', status: 'Recebido', texto: 'O estudante enviou um novo relato.' },
+      { quando: '15/09', status: 'Em análise', texto: 'Caso encaminhado para análise da equipe responsável.' },
+      { quando: '16/09', status: 'Em acompanhamento', texto: 'Conversa com a turma mediada pela orientação.' },
+      { quando: '19/09', status: 'Encerrado', texto: 'Caso encerrado com acompanhamento da família.' },
+    ],
+  },
+];
+
+// próximo protocolo = maior já emitido + 1, no formato SB-<ano>-0000
+export function proximoProtocolo(relatos, data = hojeBR()) {
+  const n = Math.max(...relatos.map((r) => Number(r.protocolo.slice(-4)))) + 1;
+  return `SB-${data.slice(-4)}-${String(n).padStart(4, '0')}`;
+}
+
+// os filtros da gestão misturam tipo e status numa fila só (spec §6)
+export function combinaFiltro(r, filtro) {
+  if (filtro === 'Todos') return true;
+  if (filtro === 'Outros') return r.tipo === 'Outra situação';
+  return filtro === r.tipo || filtro === statusRelato[r.status].filtro;
+}

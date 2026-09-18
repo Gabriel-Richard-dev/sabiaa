@@ -1,18 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Animated, Modal, Pressable, Text, View } from 'react-native';
-import { Anim, Bar, Btn, c, Campo, Card, f, H, Icone, Opcao, Sabia, Shell, Stat, T, useNav, useStore } from './ui';
+import { Anim, Bar, Btn, c, Campo, Card, f, H, Icone, Opcao, Rotulo, Sabia, Shell, Stat, T, useNav, useStore } from './ui';
 import { ALUNO, avisos, categorias, comunidades, desenhos, iaPadrao, iaRespostas, itens, notas, slides } from './mock';
+import { AjudaHome } from './protecao';
 
 // telas do aluno usam só a família violeta + neutros; verde (mint) fica reservado para "feito/certo"
-
-function Rotulo({ children, icone, cor = c.violet }) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-      {icone && <Icone name={icone} size={15} color={cor} />}
-      <Text style={{ fontFamily: f.extra, fontSize: 12, letterSpacing: 1, color: cor }}>{children}</Text>
-    </View>
-  );
-}
 
 function Feito({ texto, claro }) {
   const cor = claro ? c.mintSoft : c.mintDark;
@@ -189,6 +181,8 @@ function Inicio() {
         feito={indo && 'Você está participando!'}
         onPress={() => nav.abrir(ComunidadeDetalhe, { m: xadrez })}
       />
+
+      <AjudaHome />
     </>
   );
 }
