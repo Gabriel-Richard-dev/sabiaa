@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Animated, BackHandler, Modal, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Anim, Bar, Btn, c, Campo, Card, f, H, Icone, Opcao, Rotulo, Sabia, Shell, Stat, T, useNav, useStore } from './ui';
-import { ALUNO, avisos, categorias, comunidades, desenhos, focoDuracoes, focoObjetivos, humores, iaPadrao, iaRespostas, itens, notas, resumoFoco, slides } from './mock';
+import { ALUNO, avisos, categorias, comunidades, desenhos, focoDuracoes, focoObjetivos, humores, iaPadrao, iaRespostas, itens, notas, resumoFoco, slides, tiposSabia } from './mock';
 import { Central } from './protecao';
 
 // telas do aluno usam só a família violeta + neutros; verde (mint) fica reservado para "feito/certo"
@@ -111,7 +111,7 @@ function Inicio() {
       <Pressable accessibilityRole="button" accessibilityLabel="Personalizar seu Sabiá" accessibilityHint="Abre os itens e roupas do Sabiá" onPress={() => nav.abrir(Personalizar)}>
         <Card style={[destaque(), { borderBottomWidth: 6, gap: 10 }]}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Sabia size={150} equip={s.equip} />
+            <Sabia size={150} equip={s.equip} tipo={s.tipoSabia} />
             <View style={{ flex: 1, gap: 2 }}>
               <Rotulo icone="bird">SABIÁ</Rotulo>
               <H style={{ fontSize: 30, lineHeight: 36 }}>Nível {n}</H>
@@ -743,7 +743,7 @@ function Personalizar() {
   return (
     <>
       <Card center style={destaque()}>
-        <Sabia size={230} equip={s.equip} anim="idle2" />
+        <Sabia size={230} equip={s.equip} tipo={s.tipoSabia} anim="idle2" />
         <T muted>Nível {s.nivel.n} · toque em um item para vestir</T>
       </Card>
 
@@ -755,42 +755,74 @@ function Personalizar() {
         ))}
       </View>
 
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12 }}>
-        {itens
-          .filter((it) => it.cat === cat)
-          .map((it) => {
-            const livre = s.nivel.n >= it.nivel;
-            const usando = s.equip[it.slot] === it.id;
-            const cor = livre ? c.violet : c.slate;
-            return (
-              <Pressable
-                key={it.id}
-                disabled={!livre}
-                onPress={() => s.vestir(it)}
-                accessibilityRole="button"
-                accessibilityLabel={`${it.nome}, ${usando ? 'usando' : livre ? 'disponível' : `bloqueado até o nível ${it.nivel}`}`}
-                accessibilityState={{ disabled: !livre, selected: usando }}
-                style={{ width: '48%', alignItems: 'center', gap: 4, padding: 12, borderRadius: 16, borderWidth: 2, borderColor: usando ? c.violet : c.line, backgroundColor: usando ? c.violetMist : c.snow, opacity: livre ? 1 : 0.6 }}
-              >
-                <Icone name={it.icone} size={44} color={livre ? it.cor : c.hare} />
-                <T style={{ fontWeight: '800', fontSize: 14, textAlign: 'center' }}>{it.nome}</T>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <Icone name={livre ? 'check' : 'lock'} size={14} color={cor} />
-                  <T style={{ fontWeight: '700', fontSize: 12, color: cor }}>{usando ? 'Usando' : livre ? 'Disponível' : `Nível ${it.nivel}`}</T>
-                </View>
-              </Pressable>
-            );
-          })}
-      </View>
+      {cat === 'DIVERSIDADE' ? (
+        <View style={{ gap: 12 }}>
+          <Card style={[destaque(), { gap: 6 }]}>
+            <H small>Escolha seu Sabiá</H>
+            <T muted>Todos são gratuitos. Você pode escolher um por vez.</T>
+          </Card>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12 }}>
+            {tiposSabia.map((tipo) => {
+              const usando = s.tipoSabia === tipo.id;
+              return (
+                <Pressable
+                  key={tipo.id}
+                  onPress={() => s.escolherTipoSabia(tipo.id)}
+                  accessibilityRole="radio"
+                  accessibilityLabel={`${tipo.nome}, ${usando ? 'selecionado' : 'gratuito'}`}
+                  accessibilityState={{ checked: usando }}
+                  style={{ width: '48%', alignItems: 'center', gap: 6, padding: 12, borderRadius: 16, borderWidth: 2, borderColor: usando ? c.violet : c.line, backgroundColor: usando ? c.violetMist : c.snow }}
+                >
+                  <Sabia size={108} tipo={tipo.id} />
+                  <T style={{ fontWeight: '800', fontSize: 14, textAlign: 'center' }}>{tipo.nome}</T>
+                  <T muted style={{ fontSize: 12, textAlign: 'center' }}>{tipo.desc}</T>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <Icone name={usando ? 'check-circle' : 'gift-outline'} size={16} color={c.violet} />
+                    <T style={{ fontWeight: '700', fontSize: 12, color: c.violet }}>{usando ? 'Usando' : 'Grátis'}</T>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+      ) : (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12 }}>
+          {itens
+            .filter((it) => it.cat === cat)
+            .map((it) => {
+              const livre = s.nivel.n >= it.nivel;
+              const usando = s.equip[it.slot] === it.id;
+              const cor = livre ? c.violet : c.slate;
+              return (
+                <Pressable
+                  key={it.id}
+                  disabled={!livre}
+                  onPress={() => s.vestir(it)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${it.nome}, ${usando ? 'usando' : livre ? 'disponível' : `bloqueado até o nível ${it.nivel}`}`}
+                  accessibilityState={{ disabled: !livre, selected: usando }}
+                  style={{ width: '48%', alignItems: 'center', gap: 4, padding: 12, borderRadius: 16, borderWidth: 2, borderColor: usando ? c.violet : c.line, backgroundColor: usando ? c.violetMist : c.snow, opacity: livre ? 1 : 0.6 }}
+                >
+                  <Icone name={it.icone} size={44} color={livre ? it.cor : c.hare} />
+                  <T style={{ fontWeight: '800', fontSize: 14, textAlign: 'center' }}>{it.nome}</T>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <Icone name={livre ? 'check' : 'lock'} size={14} color={cor} />
+                    <T style={{ fontWeight: '700', fontSize: 12, color: cor }}>{usando ? 'Usando' : livre ? 'Disponível' : `Nível ${it.nivel}`}</T>
+                  </View>
+                </Pressable>
+              );
+            })}
+        </View>
+      )}
 
-      <Card style={[destaque(), { flexDirection: 'row', alignItems: 'center', gap: 12 }]}>
+      {cat !== 'DIVERSIDADE' && <Card style={[destaque(), { flexDirection: 'row', alignItems: 'center', gap: 12 }]}>
         <Anim nome="cores" size={90} />
         <View style={{ flex: 1 }}>
           <Rotulo icone="lock">NÍVEL 12</Rotulo>
           <H small>Cores especiais</H>
           <T muted style={{ fontSize: 13 }}>Pinte as penas do seu Sabiá com cores novas.</T>
         </View>
-      </Card>
+      </Card>}
     </>
   );
 }
@@ -802,7 +834,7 @@ function Perfil() {
   return (
     <>
       <Card center style={destaque()}>
-        <Sabia size={200} equip={s.equip} anim="idle2" />
+        <Sabia size={200} equip={s.equip} tipo={s.tipoSabia} anim="idle2" />
         <H>{ALUNO.nome}</H>
         <T muted>{ALUNO.turma} · Sabiá nível {n} · {s.xp} XP</T>
         <Bar value={s.xp - min} max={prox - min} />
@@ -1050,7 +1082,7 @@ function Sessao({ sessao, onFim }) {
           )}
         </View>
         <View pointerEvents="none" style={{ position: 'absolute', right: 12, bottom: 12 }}>
-          <Sabia size={84} equip={s.equip} anim={pausado ? 'idle1' : 'escrevendo'} />
+          <Sabia size={84} equip={s.equip} tipo={s.tipoSabia} anim={pausado ? 'idle1' : 'escrevendo'} />
         </View>
       </SafeAreaView>
     </Modal>
@@ -1145,7 +1177,7 @@ function Foco() {
   return (
     <>
       <Card center style={[destaque(), { gap: 10 }]}>
-        <Sabia size={130} equip={s.equip} />
+        <Sabia size={130} equip={s.equip} tipo={s.tipoSabia} />
         <H>Vamos focar juntos?</H>
         <T muted style={{ textAlign: 'center' }}>{seq} dias de sequência · {minSemana} min focados esta semana</T>
       </Card>

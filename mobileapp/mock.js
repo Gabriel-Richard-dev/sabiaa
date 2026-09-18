@@ -18,7 +18,13 @@ export function nivel(xp) {
   return { n: 6 + i, min: niveis[i], prox: niveis[i + 1] };
 }
 
-export const categorias = ['ROUPAS', 'ACESSÓRIOS', 'CHAPÉUS', 'ITENS'];
+export const categorias = ['ROUPAS', 'ACESSÓRIOS', 'CHAPÉUS', 'ITENS', 'DIVERSIDADE'];
+
+export const tiposSabia = [
+  { id: 'classico', nome: 'Sabiá clássico', desc: 'O visual original', imagem: null },
+  { id: 'cadeirante', nome: 'Sabiá cadeirante', desc: 'Mobilidade também é voar', imagem: require('./assets/sabias/cadeirante.png') },
+  { id: 'protese', nome: 'Sabiá com prótese', desc: 'Cada história tem seu jeito', imagem: require('./assets/sabias/protese.png') },
+];
 
 // x/y (canto superior esquerdo) e tam em fração do quadro 640x640 dos vídeos idle; icone = nome no MaterialCommunityIcons
 // nivel = nível em que o item é desbloqueado (os de nível 7 são a "próxima recompensa" da home)
