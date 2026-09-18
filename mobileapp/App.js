@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { AccessibilityInfo, Image, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Anim, Btn, c, ModoConforto, setPalette, Store, T } from './ui';
-import { atividadesIniciais, eventosIniciais, hojeBR, nivel, proximoProtocolo, relatosIniciais, slides, TOTAL_TURMA } from './mock';
+import { atividadesIniciais, eventosIniciais, FOCO_HOJE, focoSessoes, hojeBR, nivel, proximoProtocolo, relatosIniciais, slides, TOTAL_TURMA } from './mock';
 import AppAluno from './aluno';
 import AppProfessor from './professor';
 import AppGestao from './gestao';
@@ -33,6 +33,7 @@ function useSabia() {
   const [desenho, setDesenho] = useState(null);
   const [lidos, setLidos] = useState([]);
   const [praticas, setPraticas] = useState([]);
+  const [focos, setFocos] = useState(focoSessoes);
   const [modoConforto, setModoConforto] = useState(false);
   const [relatos, setRelatos] = useState(relatosIniciais);
 
@@ -63,7 +64,7 @@ function useSabia() {
     perfil, entrar: setPerfil, sair: () => setPerfil(null), modoConforto,
     alternarModoConforto: () => setModoConforto((v) => !v),
     xp, nivel: nv, equip, params, setParams, atividades, feitas, eventos, eventosFeitos,
-    live, respondidas, humorHoje, mensagens, comunidades, desenho, lidos, praticas, toast, relatos,
+    live, respondidas, humorHoje, mensagens, comunidades, desenho, lidos, praticas, focos, toast, relatos,
 
     fecharToast: () => setToast(null),
     // nível novo ainda não comemorado abre o modal de recompensa
@@ -104,6 +105,13 @@ function useSabia() {
       ganhar(15, 'Cuidar de como você se sente também conta!');
     },
     lerAviso: (id) => setLidos((l) => (l.includes(id) ? l : [...l, id])),
+
+    // sessão de foco: 1 minuto concluído = 1 XP; a interrompida entra no histórico sem pontuar
+    registrarFoco: (f) => {
+      setFocos((l) => [{ ...f, dia: FOCO_HOJE }, ...l]);
+      if (f.feita) ganhar(f.min, 'Foco concluído! Você reservou esse tempo para aprender.');
+    },
+    avaliarFoco: (nota) => setFocos((l) => l.map((f, i) => (i ? f : { ...f, nota }))),
 
     irSlide: (n) => setLive({ slide: n, aberta: false, respostas: [], simulados: 0 }),
     abrirPergunta: () => setLive((l) => ({ ...l, aberta: true })),
