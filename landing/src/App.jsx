@@ -186,15 +186,20 @@ const INCLUSAO = [
   { frase: 'Cada história tem seu jeito', cor: 'bg-mint-soft' },
 ]
 
-// atualizar junto com mobileapp/app.json e o arquivo em public/sabiaa.apk
-const VERSAO_APP = '1.1.0'
+// precisa bater com mobileapp/app.json E com a tag do release no GitHub
+const VERSAO_APP = '2.0.0'
 const TAMANHO_APK = '74 MB'
 
 const TIME = ['Camila Azevedo', 'Juan Pedro', 'Gabriel Richard', 'Mariana Holanda']
 
+// o APK mora no release do GitHub, nao na VPS: 74 MB x ~900 alunos sao 65 GB
+// que o CDN deles absorve de graca. `download` e ignorado cross-origin, mas o
+// GitHub ja manda Content-Disposition: attachment, entao baixa igual.
+const APK_URL = `https://github.com/Gabriel-Richard-dev/sabiaa/releases/download/${VERSAO_APP}/sabiaa.apk`
+
 function BaixarApp({ className = '' }) {
   return (
-    <a href="/sabiaa.apk" download="sabiaa.apk" className={`btn-pilula gap-2 bg-violet-deep text-white ${className}`}>
+    <a href={APK_URL} className={`btn-pilula gap-2 bg-violet-deep text-white ${className}`}>
       <Download className="size-5" strokeWidth={2.5} /> Baixar APK
     </a>
   )
