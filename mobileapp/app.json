@@ -20,6 +20,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "experiments": {
+      "baseUrl": "/demo"
+    },
     "plugins": [
       "expo-font",
       "expo-video"

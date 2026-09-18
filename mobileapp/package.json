@@ -21,6 +21,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
+    "demo": "expo export --platform web --clear --output-dir ../landing/public/demo",
     "apk": "expo prebuild --platform android --clean && cd android && JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ANDROID_HOME=$HOME/Android/Sdk ./gradlew assembleRelease"
   },
   "private": true

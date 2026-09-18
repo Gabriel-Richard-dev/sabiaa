@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "oxlint",
+    "lint": "oxlint --ignore-pattern public/demo",
     "preview": "vite preview"
   },
   "dependencies": {

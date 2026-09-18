@@ -637,12 +637,17 @@ export default function App() {
           <div>
             <h2 className="font-display text-3xl font-extrabold sm:text-4xl">Leve o Sabiaa no bolso</h2>
             <p className="mt-4 text-lg font-semibold text-slate">
-              O app reúne os três perfis: aluno, professor e gestão. Instale e explore a versão final.
+              O app reúne os três perfis: aluno, professor e gestão. Instale no Android ou abra o
+              mesmo app direto no navegador.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <BaixarApp />
-              <span className="text-sm font-bold text-slate">Android 7+ · v1.0.0 · 73 MB</span>
+              {/* o app do ./mobileapp exportado para web (npm run demo) */}
+              <Botao href="/demo/" variante="branco">
+                <span className="flex items-center gap-2"><Globe className="size-5" strokeWidth={2.5} /> Testar no navegador</span>
+              </Botao>
             </div>
+            <p className="mt-4 text-sm font-bold text-slate">Android 7+ · v1.0.0 · 73 MB · no navegador não precisa instalar</p>
             <ol className="mt-8 space-y-3">
               {PASSOS.map((passo, i) => (
                 <li key={passo} className="flex gap-3 font-semibold text-slate">
