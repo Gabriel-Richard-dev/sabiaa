@@ -124,6 +124,10 @@ function Inicio() {
             <Icone name="chat-processing-outline" size={20} color={c.violet} />
             <T style={{ flex: 1, fontSize: 14 }}>{quase ? 'Seu Sabiá está quase desbloqueando uma nova roupa!' : 'Continue assim para desbloquear novas roupas!'}</T>
           </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 4 }}>
+            <T style={{ color: c.violet, fontWeight: '800', fontSize: 13 }}>Toque para personalizar</T>
+            <Icone accessible={false} name="chevron-right" size={18} color={c.violet} />
+          </View>
         </Card>
       </Pressable>
 

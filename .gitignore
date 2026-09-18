@@ -12,6 +12,8 @@ dist
 !landing/public/demo/assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/
 !landing/public/demo/assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.6e435534bd35da5fef04168860a9b8fa.ttf
 !landing/public/demo/assets/node_modules/@expo-google-fonts/
+landing/public/demo/assets/node_modules/@expo-google-fonts/baloo-2/*
+landing/public/demo/assets/node_modules/@expo-google-fonts/nunito/*
 !landing/public/demo/assets/node_modules/@expo-google-fonts/baloo-2/
 !landing/public/demo/assets/node_modules/@expo-google-fonts/baloo-2/700Bold/
 !landing/public/demo/assets/node_modules/@expo-google-fonts/baloo-2/700Bold/Baloo2_700Bold.f57ab981c1dec25a04bea3cce20ea18c.ttf
