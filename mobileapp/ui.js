@@ -189,12 +189,13 @@ export function Rotulo({ children, icone, cor = c.violet }) {
   );
 }
 
-// selo de status: bolinha + texto, sobre o tom claro da própria cor
+// selo de status: a bolinha carrega a cor, o texto fica legível nas duas paletas
 export function Selo({ texto, cor = 'violet' }) {
+  const fundo = c[cor === 'violet' ? 'violetMist' : `${cor}Soft`];
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: c[`${cor}Soft`] }}>
-      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: c[`${cor}Dark`] ?? c[cor] }} />
-      <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 12, color: c[`${cor}Dark`] ?? c[cor] }}>{texto}</Text>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: fundo }}>
+      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: c[cor] }} />
+      <Text allowFontScaling style={{ fontFamily: f.extra, fontSize: 12, color: c.ink }}>{texto}</Text>
     </View>
   );
 }
