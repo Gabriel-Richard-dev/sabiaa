@@ -22,6 +22,61 @@
         height: 100%;
         flex: 1;
       }
+
+      body {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background: #e7e7ee;
+      }
+
+      #root {
+        position: relative;
+        box-sizing: border-box;
+        flex: 0 1 auto;
+        width: min(430px, 100%);
+        max-height: 900px;
+        border: 10px solid #161622;
+        border-radius: 40px;
+        overflow: hidden;
+        background: #f0effc;
+        box-shadow: 0 20px 50px rgb(22 22 34 / 25%);
+      }
+
+      #root::before {
+        content: '';
+        position: absolute;
+        z-index: 1;
+        top: 8px;
+        left: 50%;
+        width: 88px;
+        height: 5px;
+        border-radius: 999px;
+        background: #161622;
+        transform: translateX(-50%);
+      }
+
+      @media (max-width: 600px) {
+        body {
+          display: block;
+          padding: 0;
+          background: #fff;
+        }
+
+        #root {
+          width: 100%;
+          max-height: none;
+          border: 0;
+          border-radius: 0;
+          box-shadow: none;
+        }
+
+        #root::before {
+          display: none;
+        }
+      }
     </style>
   <link rel="icon" href="/demo/favicon.ico"/></head>
 
