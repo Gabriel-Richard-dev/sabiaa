@@ -39,14 +39,14 @@ export function NumberTicker({ value, suffix = '', className }) {
   const spring = useSpring(mv, { damping: 30, stiffness: 120 })
 
   useEffect(() => {
-    if (emVista || reduzir) mv.set(value)
+    if (emVista && !reduzir) mv.set(value)
   }, [emVista, mv, reduzir, value])
 
   useEffect(
-    () => spring.on('change', (v) => {
+    () => reduzir ? undefined : spring.on('change', (v) => {
       if (ref.current) ref.current.textContent = Math.round(v) + suffix
     }),
-    [spring, suffix],
+    [reduzir, spring, suffix],
   )
 
   return <span ref={ref} aria-label={`${value}${suffix}`} className={className}>{reduzir ? `${value}${suffix}` : `0${suffix}`}</span>
@@ -110,10 +110,6 @@ export function LoopVideo({ src, loopStart = 0, className }) {
     )
     io.observe(v)
     return () => io.disconnect()
-  }, [reduzir])
-
-  useEffect(() => {
-    if (reduzir) ref.current?.pause()
   }, [reduzir])
 
   return (

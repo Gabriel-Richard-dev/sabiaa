@@ -239,7 +239,6 @@ export function Shell({ perfil, tabs, children }) {
     irAba: (key) => {
       setAba(key);
       setPilha([]);
-      AccessibilityInfo.announceForAccessibility(`${key} selecionado`);
     },
   };
 
@@ -258,7 +257,7 @@ export function Shell({ perfil, tabs, children }) {
       <SafeAreaView style={{ flex: 1, backgroundColor: c.mist }} edges={['top', 'bottom']}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 4, minHeight: 52, backgroundColor: c.snow, borderBottomWidth: 2, borderColor: c.line }}>
           {topo ? (
-              <Pressable onPress={nav.voltar} hitSlop={10} accessibilityRole="button" accessibilityLabel="Voltar" accessibilityHint="Volta para a tela anterior" style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginLeft: -6, minHeight: 44 }}>
+            <Pressable onPress={nav.voltar} hitSlop={10} accessibilityRole="button" accessibilityLabel="Voltar" accessibilityHint="Volta para a tela anterior" style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginLeft: -6, minHeight: 44 }}>
               <Icone name="chevron-left" size={28} color={c.violet} />
               <Text style={{ color: c.violet, fontFamily: f.extra, fontSize: 16 }}>Voltar</Text>
             </Pressable>

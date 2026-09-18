@@ -525,8 +525,8 @@ function Desenho({ onEnviar, onCancelar }) {
           <Icone accessible={false} name="eraser" size={28} color={c.slate} />
         </Pressable>
       </View>
-      <Campo label="Descrição alternativa do desenho" value={descricao} onChangeText={setDescricao} placeholder="Ou descreva o que você desenharia" />
-      <Btn title="Enviar para o mural" icone="send" disabled={!pontos.length && !descricao.trim()} onPress={() => onEnviar(pontos.length ? pontos : { descricao: descricao.trim() })} />
+      <Campo label="Descrição alternativa do desenho" value={descricao} onChangeText={setDescricao} placeholder="Descreva o que você desenhou" />
+      <Btn title="Enviar para o mural" icone="send" disabled={!pontos.length && !descricao.trim()} onPress={() => onEnviar({ pontos: pontos.length ? pontos : null, descricao: descricao.trim() })} />
       <Btn title="Cancelar" color={c.slate} onPress={onCancelar} />
     </Card>
   );
@@ -537,7 +537,7 @@ function Mural() {
   const s = useStore();
   const [curtidos, setCurtidos] = useState([]);
   const curtir = (id) => setCurtidos((l) => (l.includes(id) ? l.filter((x) => x !== id) : [...l, id]));
-  const quadros = [...(s.desenho ? [{ autor: 'Você', turma: ALUNO.turma, titulo: 'Meu desenho', curtidas: 0, ...(Array.isArray(s.desenho) ? { pontos: s.desenho } : s.desenho) }] : []), ...desenhos];
+  const quadros = [...(s.desenho ? [{ autor: 'Você', turma: ALUNO.turma, titulo: 'Meu desenho', curtidas: 0, ...s.desenho }] : []), ...desenhos];
   return (
     <>
       <Rotulo icone="image-multiple">MURAL DE DESENHOS</Rotulo>
@@ -546,7 +546,7 @@ function Mural() {
           const curtido = curtidos.includes(d.autor);
           return (
             <View key={d.autor} style={{ width: '48%', gap: 4 }}>
-              <View style={{ aspectRatio: 1, borderRadius: 12, borderWidth: 2, borderColor: c.line, backgroundColor: c.snow, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+              <View accessible accessibilityRole="image" accessibilityLabel={d.descricao || d.titulo} style={{ aspectRatio: 1, borderRadius: 12, borderWidth: 2, borderColor: c.line, backgroundColor: c.snow, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                 {d.pontos ? <Rabisco pontos={d.pontos} dot={5} /> : d.descricao ? <T style={{ padding: 12, textAlign: 'center' }}>{d.descricao}</T> : <Text allowFontScaling style={{ fontSize: 64, lineHeight: 84 }}>{d.emoji}</Text>}
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -594,7 +594,7 @@ function Desafio() {
   );
 }
 
-const rostos = [c.violetSoft, c.violet, c.violetDark, c.violetDeep];
+const rostos = () => [c.violetSoft, c.violet, c.violetDark, c.violetDeep];
 
 function Encontro({ m, detalhe }) {
   const s = useStore();
@@ -613,7 +613,7 @@ function Encontro({ m, detalhe }) {
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <View style={{ flexDirection: 'row' }}>
-            {rostos.map((cor, k) => (
+            {rostos().map((cor, k) => (
               <View key={cor} style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: cor, borderWidth: 2, borderColor: c.snow, marginLeft: k ? -8 : 0 }} />
             ))}
           </View>
@@ -1072,7 +1072,7 @@ function Toast() {
   }, [k]);
   if (!s.toast) return null;
   return (
-    <View accessible accessibilityRole="alert" accessibilityLiveRegion="polite" pointerEvents="none" style={{ position: 'absolute', left: 16, right: 16, bottom: 90, flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, borderRadius: 16, backgroundColor: c.violetDeep }}>
+    <View pointerEvents="none" style={{ position: 'absolute', left: 16, right: 16, bottom: 90, flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, borderRadius: 16, backgroundColor: c.violetDeep }}>
       <Icone accessible={false} name="star-four-points" size={24} color={c.violetSoft} />
       <Text allowFontScaling style={{ fontFamily: f.tituloExtra, fontSize: 24, lineHeight: 30, color: c.snow }}>+{s.toast.n} XP</Text>
       <T style={{ flex: 1, fontSize: 14, color: c.violetMist }}>{s.toast.msg}</T>

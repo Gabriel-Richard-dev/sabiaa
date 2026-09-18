@@ -260,7 +260,7 @@ export default function App() {
 
   return (
     <>
-      <a href="#proposta" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-violet-deep">
+      <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-violet-deep">
         Pular para o conteúdo principal
       </a>
       {/* Hero */}
@@ -296,6 +296,7 @@ export default function App() {
         </div>
       </header>
 
+      <main id="conteudo" tabIndex={-1}>
       {/* Problema + dados */}
       <Secao id="problema" cor="mist">
         <Titulo sub="A resposta atual é uma só: proibir. A atenção melhora, mas o tédio e a ansiedade aparecem no lugar.">
@@ -655,6 +656,8 @@ export default function App() {
           </div>
         </div>
       </Secao>
+
+      </main>
 
       <footer className="border-t-2 border-line px-6 py-16 text-center">
         <LoopVideo src="/media/feliz.mp4" className="mx-auto w-40 rounded-3xl" />
