@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEventListener } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { itens } from './mock';
+import { itens, tiposSabia } from './mock';
 
 export function Icone({ accessible = false, ...props }) {
   return <MaterialCommunityIcons accessible={accessible} {...props} />;
@@ -239,10 +239,11 @@ export function Campo({ label, accessibilityLabel, ...props }) {
 }
 
 // sabiá animado (vídeo idle) com os itens equipados desenhados por cima; usar sobre fundo violetMist
-export function Sabia({ size = 160, equip = {}, anim = 'idle1' }) {
+export function Sabia({ size = 160, equip = {}, anim = 'idle1', tipo = 'classico' }) {
+  const variante = tiposSabia.find((t) => t.id === tipo) || tiposSabia[0];
   return (
     <View accessible={false} importantForAccessibility="no-hide-descendants" style={{ width: size, height: size }}>
-      <Anim nome={anim} size={size} />
+      {variante.imagem ? <Image source={variante.imagem} resizeMode="contain" style={{ width: size, height: size, transform: [{ scale: variante.escala || 1 }] }} /> : <Anim nome={anim} size={size} />}
       {itens
         .filter((it) => equip[it.slot] === it.id)
         .map((it) => (

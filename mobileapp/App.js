@@ -20,6 +20,7 @@ function useSabia() {
   const [nivelVisto, setNivelVisto] = useState(nivel(XP_INICIAL).n);
   const [toast, setToast] = useState(null);
   const [equip, setEquip] = useState({});
+  const [tipoSabia, setTipoSabia] = useState('classico');
   const [params, setParams] = useState({ participacao: 20, acerto: 10, meta: 75 });
   const [atividades, setAtividades] = useState(atividadesIniciais);
   const [feitas, setFeitas] = useState({});
@@ -61,8 +62,9 @@ function useSabia() {
   const nv = nivel(xp);
 
   return {
-    perfil, entrar: setPerfil, sair: () => setPerfil(null), modoConforto,
+    perfil, entrar: setPerfil, sair: () => setPerfil(null), modoConforto, tipoSabia,
     alternarModoConforto: () => setModoConforto((v) => !v),
+    escolherTipoSabia: setTipoSabia,
     xp, nivel: nv, equip, params, setParams, atividades, feitas, eventos, eventosFeitos,
     live, respondidas, humorHoje, mensagens, comunidades, desenho, lidos, praticas, focos, toast, relatos,
 

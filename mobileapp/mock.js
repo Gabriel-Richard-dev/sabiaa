@@ -18,13 +18,19 @@ export function nivel(xp) {
   return { n: 6 + i, min: niveis[i], prox: niveis[i + 1] };
 }
 
-export const categorias = ['ROUPAS', 'ACESSÓRIOS', 'CHAPÉUS', 'ITENS'];
+export const categorias = ['ACESSÓRIOS', 'CHAPÉUS', 'ITENS', 'DIVERSIDADE'];
+
+export const tiposSabia = [
+  { id: 'classico', nome: 'Clássico', desc: 'O visual original', imagem: null },
+  { id: 'cadeirante', nome: 'Cadeirante', desc: 'Mobilidade também é voar', imagem: require('./assets/sabias/cadeirante.png') },
+  { id: 'protese', nome: 'Com prótese', desc: 'Cada história tem seu jeito', imagem: require('./assets/sabias/protese.png') },
+  { id: 'autista', nome: 'Autista', desc: 'Um jeito único de sentir o mundo', imagem: require('./assets/sabias/autista.png'), escala: 0.80 },
+  { id: 'cego', nome: 'Deficiente visual', desc: 'Autonomia para encontrar caminhos', imagem: require('./assets/sabias/cego.png') },
+];
 
 // x/y (canto superior esquerdo) e tam em fração do quadro 640x640 dos vídeos idle; icone = nome no MaterialCommunityIcons
 // nivel = nível em que o item é desbloqueado (os de nível 7 são a "próxima recompensa" da home)
 export const itens = [
-  { id: 'camiseta', cat: 'ROUPAS', nome: 'Camiseta da escola', icone: 'tshirt-crew', cor: '#45b6ff', nivel: 6, slot: 'corpo', x: 0.37, y: 0.44, tam: 0.36 },
-  { id: 'interclasse', cat: 'ROUPAS', nome: 'Camisa do interclasse', icone: 'tshirt-v', cor: '#22c58b', nivel: 9, slot: 'corpo', x: 0.37, y: 0.44, tam: 0.36 },
   { id: 'oculos', cat: 'ACESSÓRIOS', nome: 'Óculos escuros', icone: 'sunglasses', cor: '#030021', nivel: 6, slot: 'rosto', x: 0.41, y: 0.2, tam: 0.34 },
   { id: 'laco', cat: 'ACESSÓRIOS', nome: 'Gravata borboleta', icone: 'bow-tie', cor: '#ff5d73', nivel: 6, slot: 'pescoco', x: 0.53, y: 0.43, tam: 0.14 },
   { id: 'colar', cat: 'ACESSÓRIOS', nome: 'Colar de estrela', icone: 'necklace', cor: '#ffc247', nivel: 8, slot: 'pescoco', x: 0.51, y: 0.41, tam: 0.18 },
