@@ -281,11 +281,6 @@ export default function App() {
               </ShimmerButton>
               <Botao href="#proposta" variante="branco">Ver a proposta</Botao>
             </div>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-sm font-extrabold sm:mt-6 sm:justify-start">
-              <span className="mr-1 text-slate">Demo web:</span>
-              <a href="#painel-professor" className="rounded-xl bg-sky-soft px-3 py-2 text-sky-dark hover:brightness-95">Professor</a>
-              <a href="#painel-gestao" className="rounded-xl bg-violet-mist px-3 py-2 text-violet-deep hover:brightness-95">Gestão</a>
-            </div>
           </div>
           {/* no mobile o Sabiá vem antes do texto, menor, para caber acima da dobra */}
           <LoopVideo
@@ -404,7 +399,6 @@ export default function App() {
                   </li>
                 ))}
               </ul>
-              {p.nome !== 'Aluno' && <a href={p.nome === 'Professor' ? '#painel-professor' : '#painel-gestao'} className="mt-auto inline-flex items-center gap-1 pt-5 text-sm font-extrabold text-violet hover:text-violet-deep">Abrir painel web <span aria-hidden>→</span></a>}
             </BlurFade>
           ))}
         </div>
@@ -662,6 +656,39 @@ export default function App() {
         </div>
       </Secao>
 
+      {/* Painel web */}
+      <Secao id="painel-web" cor="mist">
+        <Titulo sub="O app principal é para a comunidade escolar. O painel web é uma ferramenta de acompanhamento para professores e gestão.">
+          Um painel para quem cuida da escola
+        </Titulo>
+        <div className="mx-auto max-w-3xl rounded-3xl border-2 border-line bg-white p-6 sm:p-10">
+          <p className="text-center text-lg font-semibold text-slate">
+            Aqui você pode explorar uma demonstração do dashboard: uma visão mais ampla da rotina
+            escolar, com dados fictícios e indicadores para apoiar decisões pedagógicas.
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl bg-sky-soft p-5">
+              <h3 className="font-display text-xl font-extrabold text-sky-dark">Área do professor</h3>
+              <p className="mt-2 font-semibold text-slate">
+                Acompanhe turmas, conduza aulas interativas e crie atividades para os estudantes.
+              </p>
+              <a href="#painel-professor" className="mt-5 inline-flex font-extrabold text-sky-dark hover:underline">
+                Explorar como professor →
+              </a>
+            </div>
+            <div className="rounded-2xl bg-violet-mist p-5">
+              <h3 className="font-display text-xl font-extrabold text-violet-deep">Gestão escolar</h3>
+              <p className="mt-2 font-semibold text-slate">
+                Consulte indicadores agregados, organize eventos e acompanhe o progresso da escola.
+              </p>
+              <a href="#painel-gestao" className="mt-5 inline-flex font-extrabold text-violet-deep hover:underline">
+                Explorar como gestão →
+              </a>
+            </div>
+          </div>
+        </div>
+      </Secao>
+
       </main>
 
       <footer className="border-t-2 border-line px-6 py-16 text-center">
@@ -669,10 +696,6 @@ export default function App() {
         <p className="font-display mx-auto mt-8 max-w-2xl text-2xl font-extrabold leading-snug sm:text-3xl">
           O celular deixa de ser uma distração quando passa a ter um propósito.
         </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <a href="#painel-professor" className="btn-pilula bg-sky text-white">Explorar painel do professor</a>
-          <a href="#painel-gestao" className="btn-pilula bg-violet text-white">Explorar painel da gestão</a>
-        </div>
         <a href="#topo" className="mt-8 inline-flex items-center gap-2 text-sm font-extrabold text-slate hover:text-violet">
           ↑ Voltar ao topo
         </a>
