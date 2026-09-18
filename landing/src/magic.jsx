@@ -97,7 +97,7 @@ export function ShimmerButton({ href, children, className = '' }) {
 // ida e volta (celular, levelup, cores, cosmeticos, idle1, idle2) já vem gravada no arquivo:
 //   split[a][b];[b]trim=start_frame=1,setpts=PTS-STARTPTS,reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[a][r]concat=n=2:v=1:a=0
 // voltar o currentTime quadro a quadro travava: cada seek decodificava desde o único keyframe.
-export function LoopVideo({ src, loopStart = 0, className }) {
+export function LoopVideo({ src, loopStart = 0, aspect = 'aspect-square', webm = true, className }) {
   const reduzir = useReduceMotion()
   const ref = useRef(null)
 
@@ -127,11 +127,11 @@ export function LoopVideo({ src, loopStart = 0, className }) {
         v.currentTime = loopStart
         v.play()
       }}
-      // todos os vídeos são 640x640: reserva o espaço antes de carregar (sem pulo de layout)
-      className={`aspect-square ${className}`}
+      // reserva o espaço antes de carregar (sem pulo de layout); a maioria dos vídeos é 640x640
+      className={`${aspect} ${className}`}
     >
       {/* webm tem metade do tamanho; mp4 fica de reserva para Safari antigo */}
-      <source src={src.replace(/\.mp4$/, '.webm')} type="video/webm" />
+      {webm && <source src={src.replace(/\.mp4$/, '.webm')} type="video/webm" />}
       <source src={src} type="video/mp4" />
     </video>
   )
