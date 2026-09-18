@@ -178,6 +178,18 @@ const STACK = [
   },
 ]
 
+// legendas dos personagens que aparecem no vídeo (os mesmos da personalização do app)
+const INCLUSAO = [
+  { frase: 'Mobilidade também é voar', cor: 'bg-violet-mist' },
+  { frase: 'Autonomia para encontrar caminhos', cor: 'bg-sky-soft' },
+  { frase: 'Um jeito único de sentir o mundo', cor: 'bg-amber-soft' },
+  { frase: 'Cada história tem seu jeito', cor: 'bg-mint-soft' },
+]
+
+// atualizar junto com mobileapp/app.json e o arquivo em public/sabiaa.apk
+const VERSAO_APP = '1.1.0'
+const TAMANHO_APK = '74 MB'
+
 const TIME = ['Camila Azevedo', 'Juan Pedro', 'Gabriel Richard', 'Mariana Holanda']
 
 function BaixarApp({ className = '' }) {
@@ -484,6 +496,28 @@ export default function App() {
         </div>
       </Secao>
 
+      {/* Inclusão */}
+      <Secao id="inclusao">
+        <Titulo sub="Feito para diferentes formas de aprender, sentir e participar. Cada estudante escolhe o Sabiá que se parece com ele.">
+          Um Sabiá para cada estudante
+        </Titulo>
+        {/* 864x480 (9/5) e sem webm: vp9 não ganhou do h264 nesse clipe */}
+        <BlurFade className="mx-auto max-w-3xl overflow-hidden rounded-3xl border-2 border-line">
+          <LoopVideo src="/media/inclusao.mp4" aspect="aspect-[9/5]" webm={false} className="w-full" />
+        </BlurFade>
+        {/* o vídeo é aria-hidden: estas frases são o que os personagens representam */}
+        <ul className="mt-6 flex flex-wrap justify-center gap-2 text-sm font-extrabold sm:gap-3">
+          {INCLUSAO.map((s) => (
+            <li key={s.frase} className={`rounded-xl px-3 py-1.5 ${s.cor}`}>{s.frase}</li>
+          ))}
+        </ul>
+        <p className="mx-auto mt-8 max-w-2xl text-center font-semibold text-slate">
+          A personalização do Sabiá não é só estética: é o estudante se ver na tela. Junto com ela
+          vêm contraste alto, textos grandes, navegação por toque e respeito a
+          <span className="whitespace-nowrap"> “reduzir movimento”</span> no sistema.
+        </p>
+      </Secao>
+
       {/* Hub da vida escolar */}
       <Secao id="hub">
         <Titulo sub="Além da sala de aula: aprender, participar, criar, conviver e cuidar, tudo no mesmo lugar.">
@@ -607,23 +641,6 @@ export default function App() {
         </div>
       </Secao>
 
-      {/* Time */}
-      <Secao id="time">
-        <Titulo sub="HACKTUDO — Time VIOLET">Quem está por trás</Titulo>
-		<img draggable="false"
-          src="/media/logo-violet.png"
-          alt="Violet Creative & Studios"
-          className="mx-auto mb-10 h-auto w-56 sm:w-64"
-        />
-        <div className="grid gap-4 sm:grid-cols-4">
-          {TIME.map((n) => (
-            <div key={n} className="rounded-2xl border-2 border-line bg-white p-5 text-center font-extrabold">
-              {n}
-            </div>
-          ))}
-        </div>
-      </Secao>
-
       {/* Download do app */}
       <Secao id="baixar" cor="violet-mist">
         <div className="grid items-center gap-10 sm:grid-cols-2">
@@ -641,7 +658,7 @@ export default function App() {
                 <span className="flex items-center gap-2"><Globe className="size-5" strokeWidth={2.5} /> Testar no navegador</span>
               </Botao>
             </div>
-            <p className="mt-4 text-sm font-bold text-slate">Android 7+ · v1.0.0 · 73 MB · no navegador não precisa instalar</p>
+            <p className="mt-4 text-sm font-bold text-slate">Android 7+ · v{VERSAO_APP} · {TAMANHO_APK} · no navegador não precisa instalar</p>
             <ol className="mt-8 space-y-3">
               {PASSOS.map((passo, i) => (
                 <li key={passo} className="flex gap-3 font-semibold text-slate">
@@ -696,9 +713,30 @@ export default function App() {
         <p className="font-display mx-auto mt-8 max-w-2xl text-2xl font-extrabold leading-snug sm:text-3xl">
           O celular deixa de ser uma distração quando passa a ter um propósito.
         </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <BaixarApp />
+          <Botao href="/demo/" variante="branco">
+            <span className="flex items-center gap-2"><Globe className="size-5" strokeWidth={2.5} /> Testar no navegador</span>
+          </Botao>
+        </div>
+        <p className="mt-4 text-sm font-bold text-slate">Versão atual: {VERSAO_APP}</p>
         <a href="#topo" className="mt-8 inline-flex items-center gap-2 text-sm font-extrabold text-slate hover:text-violet">
           ↑ Voltar ao topo
         </a>
+
+        {/* o time vive aqui: a seção própria só esticava a página */}
+        <div id="time" className="mt-12 border-t-2 border-line pt-8">
+          <img
+            draggable="false"
+            src="/media/logo-violet.png"
+            alt="Violet Creative & Studios"
+            loading="lazy"
+            className="mx-auto h-auto w-40"
+          />
+          <p className="mt-3 text-sm font-extrabold text-slate">HACKTUDO — Time VIOLET</p>
+          <p className="mt-1 text-sm font-semibold text-slate">{TIME.join(' · ')}</p>
+        </div>
+
         <img src="/media/logo.svg" alt="Sabiaa" className="mx-auto mt-10 h-12 w-auto" />
       </footer>
     </>
