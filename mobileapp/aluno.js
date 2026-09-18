@@ -108,7 +108,7 @@ function Inicio() {
         <T muted style={{ fontSize: 17 }}>Vamos continuar?</T>
       </View>
 
-      <Pressable accessibilityRole="button" accessibilityLabel="Personalizar seu Sabiá" accessibilityHint="Abre os itens e roupas do Sabiá" onPress={() => nav.abrir(Personalizar)}>
+      <Pressable accessibilityRole="button" accessibilityLabel="Personalizar seu Sabiá" accessibilityHint="Abre os acessórios e itens do Sabiá" onPress={() => nav.abrir(Personalizar)}>
         <Card style={[destaque(), { borderBottomWidth: 6, gap: 10 }]}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Sabia size={150} equip={s.equip} tipo={s.tipoSabia} />
@@ -122,7 +122,7 @@ function Inicio() {
           <T muted style={{ fontSize: 13 }}>{falta} XP para a próxima recompensa</T>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: c.snow, borderRadius: 12, padding: 10 }}>
             <Icone name="chat-processing-outline" size={20} color={c.violet} />
-            <T style={{ flex: 1, fontSize: 14 }}>{quase ? 'Seu Sabiá está quase desbloqueando uma nova roupa!' : 'Continue assim para desbloquear novas roupas!'}</T>
+            <T style={{ flex: 1, fontSize: 14 }}>{quase ? 'Seu Sabiá está quase desbloqueando um novo item!' : 'Continue assim para desbloquear novos itens!'}</T>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 4 }}>
             <T style={{ color: c.violet, fontWeight: '800', fontSize: 13 }}>Toque para personalizar</T>

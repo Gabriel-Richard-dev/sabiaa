@@ -469,7 +469,7 @@ export default function App() {
           <div>
             <h3 className="font-display text-2xl font-extrabold">Do seu jeito</h3>
             <p className="mt-3 font-semibold text-slate">
-              Cores, roupas, chapéus e acessórios. Os pontos desbloqueiam itens para personalizar o
+              Cores, chapéus e acessórios. Os pontos desbloqueiam itens para personalizar o
               Sabiá; alguns só aparecem quando o aluno sobe de nível.
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-sm font-extrabold">
