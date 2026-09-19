@@ -293,8 +293,9 @@ export default function App() {
               Aprendizado e bem-estar com IA, para escolas que querem ir além da proibição.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8 sm:justify-start sm:gap-4">
+              {/* leva à seção que oferece as duas opções: APK e navegador */}
               <ShimmerButton href="#baixar" className="bg-violet text-white">
-                <span className="flex items-center gap-2"><Download className="size-5" strokeWidth={2.5} /> Baixar o app</span>
+                <span className="flex items-center gap-2"><Smartphone className="size-5" strokeWidth={2.5} /> Testar o app</span>
               </ShimmerButton>
               <Botao href="#proposta" variante="branco">Ver a proposta</Botao>
             </div>
